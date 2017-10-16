@@ -14,10 +14,11 @@
         android:layout_centerHorizontal="true"
          />
 
-    <yanzhikai.ruler.BooheeRuler
+    <yanzhikai.ruler.InnerRuler
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_below="@+id/tv_kg"
+        android:layout_centerVertical="true"
         />
 
 
