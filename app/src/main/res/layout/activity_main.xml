@@ -21,14 +21,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/br"
-        android:layout_marginBottom="5dp"
+        app:scaleTextSize="50dp"
+        app:kgTextSize="25dp"
+        android:layout_marginBottom="20dp"
         android:id="@+id/knl"/>
 
     <yanzhikai.ruler.BooheeRuler
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="100dp"
         android:id="@+id/br"
         android:background="@color/colorDirtyWithe"
+        app:minScale="666"
+        app:maxScale="1111"
+        app:numberTextSize="22sp"
+        app:textMarginTop="80dp"
+        app:cursorHeight="45dp"
+        app:smallScaleLength="20dp"
+        app:smallScaleWidth="1.5dp"
+        app:bigScaleLength="40dp"
+        app:bigScaleWidth="2.5dp"
+        app:scaleInterval="12dp"
         android:layout_centerInParent="true"
         />
 

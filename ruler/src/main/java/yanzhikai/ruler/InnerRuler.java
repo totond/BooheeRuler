@@ -4,11 +4,11 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.annotation.Px;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -25,25 +25,18 @@ public class InnerRuler extends View {
     private Context mContext;
 
     private Paint mSmallScalePaint, mBigScalePaint, mTextPaint;
-    //最小最大刻度值(以0.1kg为单位)
-    private int mMinScale = 464, mMaxScale = 2000;
+
     //当前刻度值
     private float mCurrentScale = 0;
     //最大刻度数
     private int mMaxLength = 0;
-    //大小刻度的长度
-    private float mSmallScaleLength = 30, mBigScaleLength = 60;
     //长度
     private int mLength, mMinPositionX = 0, mMaxPositionX = 0;
-    //刻度间隔
-    private float mInterval = 18;
-    //手势监听
-    private GestureDetector mGestureDetector;
     //控制滑动
     private OverScroller mOverScroller;
     //记录落点
-    private float mLastX = 0, mLastMoveX = 0;
-    //拖动阈值
+    private float mLastX = 0;
+    //拖动阈值,这里没有使用它，用了感觉体验不好
     private int mTouchSlop;
     //惯性最大最小速度
     private int mMaximumVelocity, mMinimumVelocity;
@@ -54,9 +47,12 @@ public class InnerRuler extends View {
     //回调接口
     private RulerCallback mRulerCallback;
 
+    private BooheeRuler mParent;
 
-    public InnerRuler(Context context) {
+
+    public InnerRuler(Context context, BooheeRuler booheeRuler) {
         super(context);
+        mParent = booheeRuler;
         init(context);
     }
 
@@ -74,32 +70,22 @@ public class InnerRuler extends View {
     private void init(Context context){
         mContext = context;
 
-        mMaxLength = mMaxScale - mMinScale;
-        mCurrentScale = (mMaxScale - mMinScale) / 2;
+
+        mMaxLength = mParent.getMaxScale() - mParent.getMinScale();
+        mCurrentScale = (mParent.getMaxScale() + mParent.getMinScale()) / 2;
 
         initPaints();
-
-        //Test
-//        setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                testTransition += 30;
-////                setTranslationX(testTransition);
-//                scrollTo(testTransition,0);
-//                Log.d(TAG, "onClick: ");
-//            }
-//        });
 
         mVelocityTracker = VelocityTracker.obtain();
         mOverScroller = new OverScroller(mContext);
 
-        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+//        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         mMaximumVelocity = ViewConfiguration.get(context)
                 .getScaledMaximumFlingVelocity();
         mMinimumVelocity = ViewConfiguration.get(context)
                 .getScaledMinimumFlingVelocity();
 
-        //第一次进入，跳转到当前刻度
+        //第一次进入，跳转到设定刻度
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -109,53 +95,49 @@ public class InnerRuler extends View {
         });
     }
 
+    //初始化画笔
     private void initPaints() {
         mSmallScalePaint = new Paint();
-        mSmallScalePaint.setStrokeWidth(3);
-        mSmallScalePaint.setColor(getResources().getColor(R.color.colorGray));
+        mSmallScalePaint.setStrokeWidth(mParent.getSmallScaleWidth());
+        mSmallScalePaint.setColor(mParent.getScaleColor());
         mSmallScalePaint.setStrokeCap(Paint.Cap.ROUND);;
 
         mBigScalePaint = new Paint();
-        mBigScalePaint.setColor(getResources().getColor(R.color.colorGray));
-        mBigScalePaint.setStrokeWidth(5);
+        mBigScalePaint.setColor(mParent.getScaleColor());
+        mBigScalePaint.setStrokeWidth(mParent.getBigScaleWidth());
         mBigScalePaint.setStrokeCap(Paint.Cap.ROUND);;
 
         mTextPaint = new Paint();
-        mTextPaint.setStrokeWidth(3);
-        mTextPaint.setTextSize(28);
+        mTextPaint.setAntiAlias(true);
+        mTextPaint.setColor(mParent.getTextColor());
+        mTextPaint.setTextSize(mParent.getTextSize());
         mTextPaint.setTextAlign(Paint.Align.CENTER);
 //        mTextPaint.setStrokeJoin(Paint.Join.ROUND);
-
 
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        Log.d(TAG, "onDraw: ");
-        canvas.save();
         drawScale(canvas);
-        canvas.restore();
-
     }
 
-
-
+    //画刻度和字
     private void drawScale(Canvas canvas) {
-        for (int i = mMinScale; i <= mMaxScale; i++){
-            float locationX = (i - mMinScale) * mInterval;
+        for (int i = mParent.getMinScale(); i <= mParent.getMaxScale(); i++){
+            float locationX = (i - mParent.getMinScale()) * mParent.getInterval();
             if (i % 10 == 0) {
-                canvas.drawLine(locationX, 0, locationX, mBigScaleLength, mBigScalePaint);
-                canvas.drawText(String.valueOf(i/10), locationX, 4 * mSmallScaleLength , mTextPaint);
+                canvas.drawLine(locationX, 0, locationX, mParent.getBigScaleLength(), mBigScalePaint);
+                canvas.drawText(String.valueOf(i/10), locationX, mParent.getTextMarginTop(), mTextPaint);
             }else {
-                canvas.drawLine(locationX, 0, locationX, mSmallScaleLength, mSmallScalePaint);
+                canvas.drawLine(locationX, 0, locationX, mParent.getSmallScaleLength(), mSmallScalePaint);
             }
         }
     }
 
+    //处理滑动
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-//        return mGestureDetector.onTouchEvent(event);
         float currentX = event.getX();
         mVelocityTracker.addMovement(event);
 
@@ -174,13 +156,14 @@ public class InnerRuler extends View {
                 scrollBy((int)(moveX),0);
                 break;
             case MotionEvent.ACTION_UP:
+                //处理松手后的Fling
                 mVelocityTracker.computeCurrentVelocity(1000,mMaximumVelocity);
                 int velocityX = (int) mVelocityTracker.getXVelocity();
                 if (Math.abs(velocityX) > mMinimumVelocity)
                 {
                     fling(-velocityX);
                 }else {
-                    scrollBackToScale();
+                    scrollBackToCurrentScale();
                 }
                 mVelocityTracker.clear();
 
@@ -200,6 +183,7 @@ public class InnerRuler extends View {
         invalidate();
     }
 
+    //重写滑动方法，设置到边界的时候不滑。滑动完输出刻度
     @Override
     public void scrollTo(@Px int x, @Px int y) {
         if (x < mMinPositionX)
@@ -216,7 +200,6 @@ public class InnerRuler extends View {
         }
 
         mCurrentScale = scrollXtoScale(x);
-        Log.d(TAG, "scrollTo: mCurrentScale  " + mCurrentScale);
         if (mRulerCallback != null){
             mRulerCallback.onScaleChanging(Math.round(mCurrentScale));
         }
@@ -230,14 +213,15 @@ public class InnerRuler extends View {
     }
 
     private float scrollXtoScale(int scrollX){
-        return ((float) (scrollX + mHalfWidth) / mLength) *  mMaxLength + mMinScale;
+        return ((float) (scrollX + mHalfWidth) / mLength) *  mMaxLength + mParent.getMinScale();
     }
 
     private int scaleToScrollX(float scale){
-        return (int) ((scale - mMinScale) / mMaxLength * mLength - mHalfWidth);
+        return (int) ((scale - mParent.getMinScale()) / mMaxLength * mLength - mHalfWidth);
     }
 
-    private void scrollBackToScale(){
+    //把移动后光标对准距离最近的刻度，就是回弹到最近刻度
+    private void scrollBackToCurrentScale(){
         mCurrentScale = Math.round(mCurrentScale);
         mOverScroller.startScroll(getScrollX(),0,scaleToScrollX(mCurrentScale) - getScrollX(),0,1000);
         invalidate();
@@ -249,21 +233,20 @@ public class InnerRuler extends View {
     public void computeScroll() {
         if (mOverScroller.computeScrollOffset()) {
             scrollTo(mOverScroller.getCurrX(), mOverScroller.getCurrY());
-//            Log.d(TAG, "computeScroll: 执行");
+
+            //这是最后OverScroller的最后一次滑动，如果这次滑动完了mCurrentScale不是整数，则把尺子移动到最近的整数位置
             if (!mOverScroller.computeScrollOffset() && mCurrentScale != Math.round(mCurrentScale)){
                 //Fling完进行一次检测回滚
-                scrollBackToScale();
+                scrollBackToCurrentScale();
             }
             invalidate();
-        }else {
-//            Log.d(TAG, "computeScroll: 不执行");
         }
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mLength = (int) ((mMaxScale - mMinScale) * mInterval);
+        mLength = (mParent.getMaxScale() - mParent.getMinScale()) * mParent.getInterval();
         mHalfWidth = getMeasuredWidth()/2;
         mMinPositionX = -mHalfWidth;
         mMaxPositionX = mLength - mHalfWidth;
@@ -271,6 +254,7 @@ public class InnerRuler extends View {
 
     public void setCurrentScale(float currentScale) {
         this.mCurrentScale = currentScale;
+        scrollBackToCurrentScale();
     }
 
     public void setRulerCallback(RulerCallback RulerCallback) {
@@ -280,4 +264,5 @@ public class InnerRuler extends View {
     public float getCurrentScale() {
         return mCurrentScale;
     }
+
 }
