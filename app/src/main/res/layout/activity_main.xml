@@ -6,19 +6,30 @@
     android:layout_height="match_parent"
     tools:context="yanzhikai.booheeruler.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tv_kg"
-        android:text="Hello World!"
-        android:layout_centerHorizontal="true"
-         />
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/tv_scale"-->
+        <!--android:textSize="30sp"-->
+        <!--android:textColor="@color/colorDeepGreen"-->
+        <!--android:layout_above="@+id/br"-->
+        <!--android:text="Hello World!"-->
+        <!--android:layout_centerHorizontal="true"-->
 
-    <yanzhikai.ruler.InnerRuler
+         <!--/>-->
+    <yanzhikai.ruler.KgNumberLayout
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_below="@+id/tv_kg"
-        android:layout_centerVertical="true"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/br"
+        android:layout_marginBottom="5dp"
+        android:id="@+id/knl"/>
+
+    <yanzhikai.ruler.BooheeRuler
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:id="@+id/br"
+        android:background="@color/colorDirtyWithe"
+        android:layout_centerInParent="true"
         />
 
 

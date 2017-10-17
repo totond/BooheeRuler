@@ -2,6 +2,7 @@ package yanzhikai.ruler;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.support.annotation.Px;
@@ -12,27 +13,30 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewTreeObserver;
 import android.widget.OverScroller;
 
 /**
- * Created by yany on 2017/10/13.
+ * 实现尺子的绘画，滑动处理，计算刻度
  */
 
 public class InnerRuler extends View {
     private final String TAG = "ruler";
     private Context mContext;
 
-    private Paint mSmallScalePaint, mBigScalePaint, mCursorPaint, mTextPaint;
+    private Paint mSmallScalePaint, mBigScalePaint, mTextPaint;
     //最小最大刻度值(以0.1kg为单位)
     private int mMinScale = 464, mMaxScale = 2000;
+    //当前刻度值
+    private float mCurrentScale = 0;
     //最大刻度数
-    private int mMaxLength;
+    private int mMaxLength = 0;
     //大小刻度的长度
     private float mSmallScaleLength = 30, mBigScaleLength = 60;
-    //宽度
-    private int mWidth;
+    //长度
+    private int mLength, mMinPositionX = 0, mMaxPositionX = 0;
     //刻度间隔
-    private float mInterval = 12;
+    private float mInterval = 18;
     //手势监听
     private GestureDetector mGestureDetector;
     //控制滑动
@@ -45,8 +49,10 @@ public class InnerRuler extends View {
     private int mMaximumVelocity, mMinimumVelocity;
     //速度获取
     private VelocityTracker mVelocityTracker;
-    //test
-    private int testTransition = 0;
+    //一半宽度
+    private int mHalfWidth = 0;
+    //回调接口
+    private RulerCallback mRulerCallback;
 
 
     public InnerRuler(Context context) {
@@ -57,6 +63,7 @@ public class InnerRuler extends View {
     public InnerRuler(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context);
+
     }
 
     public InnerRuler(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -68,6 +75,7 @@ public class InnerRuler extends View {
         mContext = context;
 
         mMaxLength = mMaxScale - mMinScale;
+        mCurrentScale = (mMaxScale - mMinScale) / 2;
 
         initPaints();
 
@@ -83,7 +91,6 @@ public class InnerRuler extends View {
 //        });
 
         mVelocityTracker = VelocityTracker.obtain();
-        mGestureDetector = new GestureDetector(context,new RulerGestureListener());
         mOverScroller = new OverScroller(mContext);
 
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
@@ -91,20 +98,34 @@ public class InnerRuler extends View {
                 .getScaledMaximumFlingVelocity();
         mMinimumVelocity = ViewConfiguration.get(context)
                 .getScaledMinimumFlingVelocity();
+
+        //第一次进入，跳转到当前刻度
+        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                goToScale(mCurrentScale);
+            }
+        });
     }
 
     private void initPaints() {
         mSmallScalePaint = new Paint();
-        mBigScalePaint = new Paint();
-        mCursorPaint = new Paint();
-        mTextPaint = new Paint();
-
         mSmallScalePaint.setStrokeWidth(3);
-        mBigScalePaint.setStrokeWidth(5);
-        mCursorPaint.setStrokeWidth(3);
-        mTextPaint.setStrokeWidth(3);
+        mSmallScalePaint.setColor(getResources().getColor(R.color.colorGray));
+        mSmallScalePaint.setStrokeCap(Paint.Cap.ROUND);;
 
+        mBigScalePaint = new Paint();
+        mBigScalePaint.setColor(getResources().getColor(R.color.colorGray));
+        mBigScalePaint.setStrokeWidth(5);
+        mBigScalePaint.setStrokeCap(Paint.Cap.ROUND);;
+
+        mTextPaint = new Paint();
+        mTextPaint.setStrokeWidth(3);
         mTextPaint.setTextSize(28);
+        mTextPaint.setTextAlign(Paint.Align.CENTER);
+//        mTextPaint.setStrokeJoin(Paint.Join.ROUND);
+
 
     }
 
@@ -112,15 +133,20 @@ public class InnerRuler extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         Log.d(TAG, "onDraw: ");
+        canvas.save();
         drawScale(canvas);
+        canvas.restore();
+
     }
+
+
 
     private void drawScale(Canvas canvas) {
         for (int i = mMinScale; i <= mMaxScale; i++){
             float locationX = (i - mMinScale) * mInterval;
             if (i % 10 == 0) {
                 canvas.drawLine(locationX, 0, locationX, mBigScaleLength, mBigScalePaint);
-                canvas.drawText(String.valueOf(i/10), locationX, mBigScaleLength + 30, mTextPaint);
+                canvas.drawText(String.valueOf(i/10), locationX, 4 * mSmallScaleLength , mTextPaint);
             }else {
                 canvas.drawLine(locationX, 0, locationX, mSmallScaleLength, mSmallScalePaint);
             }
@@ -153,6 +179,8 @@ public class InnerRuler extends View {
                 if (Math.abs(velocityX) > mMinimumVelocity)
                 {
                     fling(-velocityX);
+                }else {
+                    scrollBackToScale();
                 }
                 mVelocityTracker.clear();
 
@@ -168,25 +196,53 @@ public class InnerRuler extends View {
     }
 
     private void fling(int vX){
-        mOverScroller.fling(getScrollX(), 0, vX, 0, 0, mWidth, 0, 0);
+        mOverScroller.fling(getScrollX(), 0, vX, 0, mMinPositionX, mMaxPositionX, 0, 0);
         invalidate();
     }
 
     @Override
     public void scrollTo(@Px int x, @Px int y) {
-        if (x < 0)
+        if (x < mMinPositionX)
         {
-            x = 0;
+            x = mMinPositionX;
         }
-        if (x > mWidth)
+        if (x > mMaxPositionX)
         {
-            x = mWidth;
+            x = mMaxPositionX;
         }
         if (x != getScrollX())
         {
             super.scrollTo(x, y);
         }
 
+        mCurrentScale = scrollXtoScale(x);
+        Log.d(TAG, "scrollTo: mCurrentScale  " + mCurrentScale);
+        if (mRulerCallback != null){
+            mRulerCallback.onScaleChanging(Math.round(mCurrentScale));
+        }
+
+    }
+
+    public void goToScale(float scale){
+
+        scrollTo(scaleToScrollX(scale),0);
+        mCurrentScale = scale;
+    }
+
+    private float scrollXtoScale(int scrollX){
+        return ((float) (scrollX + mHalfWidth) / mLength) *  mMaxLength + mMinScale;
+    }
+
+    private int scaleToScrollX(float scale){
+        return (int) ((scale - mMinScale) / mMaxLength * mLength - mHalfWidth);
+    }
+
+    private void scrollBackToScale(){
+        mCurrentScale = Math.round(mCurrentScale);
+        mOverScroller.startScroll(getScrollX(),0,scaleToScrollX(mCurrentScale) - getScrollX(),0,1000);
+        invalidate();
+
+//        scrollTo(scaleToScrollX(mCurrentScale),0);
     }
 
     @Override
@@ -194,6 +250,10 @@ public class InnerRuler extends View {
         if (mOverScroller.computeScrollOffset()) {
             scrollTo(mOverScroller.getCurrX(), mOverScroller.getCurrY());
 //            Log.d(TAG, "computeScroll: 执行");
+            if (!mOverScroller.computeScrollOffset() && mCurrentScale != Math.round(mCurrentScale)){
+                //Fling完进行一次检测回滚
+                scrollBackToScale();
+            }
             invalidate();
         }else {
 //            Log.d(TAG, "computeScroll: 不执行");
@@ -203,33 +263,21 @@ public class InnerRuler extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mWidth = (int) (mMaxLength * mInterval);
+        mLength = (int) ((mMaxScale - mMinScale) * mInterval);
+        mHalfWidth = getMeasuredWidth()/2;
+        mMinPositionX = -mHalfWidth;
+        mMaxPositionX = mLength - mHalfWidth;
     }
 
-    private class RulerGestureListener extends GestureDetector.SimpleOnGestureListener{
-        @Override
-        public boolean onDown(MotionEvent e) {
-            return true;
-        }
+    public void setCurrentScale(float currentScale) {
+        this.mCurrentScale = currentScale;
+    }
 
-        @Override
-        public boolean onSingleTapConfirmed(MotionEvent e) {
-            Log.d(TAG, "onSingleTapConfirmed: ");
-            mOverScroller.fling(0,0,4,0,100,400,0,0);
-            return super.onSingleTapConfirmed(e);
-        }
+    public void setRulerCallback(RulerCallback RulerCallback) {
+        this.mRulerCallback = RulerCallback;
+    }
 
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            Log.d(TAG, "onScroll: ");
-            scrollBy((int) distanceX,0);
-            return super.onScroll(e1, e2, distanceX, distanceY);
-        }
-
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            Log.d(TAG, "onFling: ");
-            return super.onFling(e1, e2, velocityX, velocityY);
-        }
+    public float getCurrentScale() {
+        return mCurrentScale;
     }
 }
