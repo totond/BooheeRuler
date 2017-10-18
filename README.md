@@ -3,9 +3,10 @@
 ![](https://i.imgur.com/0EsaR5a.gif)
 
 然后这是原效果：
+
 ![](https://i.imgur.com/WvKyJEG.gif)
 
-##介绍
+## 介绍
 　　通过观察原作的效果图和下载了薄荷健康APP观察原控件（不过最新版本已经改了一下UI），我仿写的这个BooheeRuler主要实现了以下技术难点（对我来说）：
  - 滑动界面
  - 触摸滑动后的惯性滚动
@@ -13,7 +14,7 @@
  - 计算光标选中的刻度
  - 让触摸滑动、惯性滚动之后，回滚到最近的整点刻度，如最后滑动到66.5和66.6中间靠右，则回滚到66.6
 
-##使用
+## 使用
 
 ### Gradle
 
@@ -77,9 +78,9 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
-###属性
+### 属性
 
-####BooheeRuler的属性
+#### BooheeRuler的属性
 
 |**属性名称**|**意义**|**类型**|**默认值**|
 |--|--|:--:|:--:|
@@ -99,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
 |cursorColor | 尺子中间选定光标颜色  | color| #4bbb74|
 |currentScale | 尺子初始选定刻度  | float| (maxScale + minScale)/2|
 
-####KgNumberLayout属性
+#### KgNumberLayout属性
 
 |**属性名称**|**意义**|**类型**|**默认值**|
 |--|--|:--:|:--:|
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 |kgUnitText      | 单位文字内容     | string| kg|
 
 
-###接口
+### 接口
 
 　　除了使用KgNumberLayout作为显示BooheeRuler的当前刻度之外，还可以通过实现RulerCallback回调接口来获取当前选定刻度：
 
