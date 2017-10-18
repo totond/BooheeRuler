@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
 /**
@@ -38,10 +40,10 @@ public class BooheeRuler extends RelativeLayout {
     private @ColorInt int mTextColor = getResources().getColor(R.color.colorLightBlack);
     //刻度颜色
     private @ColorInt int mScaleColor = getResources().getColor(R.color.colorGray);
-    //光标颜色
-    private @ColorInt int mCursorColor = getResources().getColor(R.color.colorForgiven);
     //初始的当前刻度
     private float mCurrentScale = 0;
+    //光标drawable
+    private Drawable mCursorDrawable;
 
     public BooheeRuler(Context context) {
         super(context);
@@ -76,10 +78,13 @@ public class BooheeRuler extends RelativeLayout {
         mTextSize = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_numberTextSize,mTextSize);
         mTextMarginTop = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_textMarginTop,mTextMarginTop);
         mInterval = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_scaleInterval,mInterval);
-        mCursorColor = typedArray.getColor(R.styleable.BooheeRuler_cursorColor,mCursorColor);
         mTextColor = typedArray.getColor(R.styleable.BooheeRuler_numberTextColor,mTextColor);
         mScaleColor = typedArray.getColor(R.styleable.BooheeRuler_scaleColor,mScaleColor);
         mCurrentScale = typedArray.getFloat(R.styleable.BooheeRuler_currentScale,(mMaxScale + mMinScale)/2);
+        mCursorDrawable = typedArray.getDrawable(R.styleable.BooheeRuler_cursorDrawable);
+        if (mCursorDrawable == null){
+            mCursorDrawable = getResources().getDrawable(R.drawable.cursor_shape);
+        }
         typedArray.recycle();
     }
 
@@ -94,14 +99,24 @@ public class BooheeRuler extends RelativeLayout {
         setWillNotDraw(false);
 
         initPaint();
+        initDrawable();
+    }
+
+    private void initDrawable() {
+        getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                getViewTreeObserver().removeOnPreDrawListener(this);
+                mCursorDrawable.setBounds((getWidth() - mCursorWidth) / 2,0
+                        ,(getWidth() + mCursorWidth) / 2,mCursorHeight);
+                return false;
+            }
+        });
 
     }
 
     private void initPaint() {
         mCPaint = new Paint();
-        mCPaint.setColor(mCursorColor);
-        mCPaint.setStrokeWidth(mCursorWidth);
-        mCPaint.setStrokeCap(Paint.Cap.ROUND);
 
         mOutLinePaint = new Paint();
         mOutLinePaint.setStrokeWidth(0);
@@ -120,7 +135,8 @@ public class BooheeRuler extends RelativeLayout {
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
         //画中间的选定光标，要在这里画，因为dispatchDraw()执行在onDraw()后面，这样子光标才能不被尺子的刻度遮蔽
-        canvas.drawLine(canvas.getWidth() / 2, 0, canvas.getWidth() / 2, mCursorHeight, mCPaint);
+        mCursorDrawable.draw(canvas);
+
     }
 
     //设置回调
@@ -133,6 +149,13 @@ public class BooheeRuler extends RelativeLayout {
     public void setCurrentScale(float currentScale) {
         mCurrentScale = currentScale;
         mInnerRuler.setCurrentScale(currentScale);
+    }
+
+    //如果控件尺寸变化，中间光标的位置也要重新定义
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        initDrawable();
     }
 
     public float getCurrentScale() {
@@ -236,59 +259,5 @@ public class BooheeRuler extends RelativeLayout {
         return mScaleColor;
     }
 
-    //    public void setBigScaleLength(float bigScaleLength) {
-//        mInnerRuler.setBigScaleLength(bigScaleLength);
-//    }
-//
-//    public float getBigScaleLength() {
-//        return mInnerRuler.getBigScaleLength();
-//    }
-//
-//    public void setSmallScaleLength(float smallScaleLength) {
-//        mInnerRuler.setSmallScaleLength(smallScaleLength);
-//    }
-//
-//    public float getSmallScaleLength() {
-//        return mInnerRuler.getSmallScaleLength();
-//    }
-//
-//    public void setTextMarginTop(int textMarginTop) {
-//        mInnerRuler.setTextMarginTop(textMarginTop);
-//    }
-//
-//    public int getTextMarginTop() {
-//        return mInnerRuler.getTextMarginTop();
-//    }
-//
-//    public void setTextSize(float textSize) {
-//        mInnerRuler.setTextSize(textSize);
-//    }
-//
-//    public float getTextSize() {
-//        return mInnerRuler.getTextSize();
-//    }
-//
-//    public void setInterval(float interval) {
-//        mInnerRuler.setInterval(interval);
-//    }
-//
-//    public float getInterval() {
-//        return mInnerRuler.getInterval();
-//    }
-//
-//    public void setBigScaleWidth(float bigScaleWidth) {
-//        mInnerRuler.setBigScaleWidth(bigScaleWidth);
-//    }
-//
-//    public float getBigScaleWidth() {
-//        return mInnerRuler.getBigScaleWidth();
-//    }
-//
-//    public void setSmallScaleWidth(float smallScaleWidth) {
-//        mInnerRuler.setSmallScaleWidth(smallScaleWidth);
-//    }
-//
-//    public float getSmallScaleWidth() {
-//        return mInnerRuler.getSmallScaleWidth();
-//    }
+
 }

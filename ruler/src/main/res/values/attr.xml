@@ -14,7 +14,7 @@
         <attr name="scaleInterval" format="dimension"/>
         <attr name="numberTextColor" format="color"/>
         <attr name="scaleColor" format="color"/>
-        <attr name="cursorColor" format="color"/>
+        <attr name="cursorDrawable" format="dimension"/>
         <attr name="currentScale" format="float"/>
     </declare-styleable>
 

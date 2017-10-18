@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 /**
  * Created by yany on 2017/10/17.
+ * 用于包着显示具体数字刻度Layout
  */
 
 public class KgNumberLayout extends RelativeLayout implements RulerCallback {

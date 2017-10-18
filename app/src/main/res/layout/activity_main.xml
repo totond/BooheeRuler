@@ -26,6 +26,7 @@
         app:maxScale="2000"
         app:numberTextSize="22sp"
         app:textMarginTop="80dp"
+        app:cursorWidth="4dp"
         app:cursorHeight="45dp"
         app:smallScaleLength="20dp"
         app:smallScaleWidth="1.5dp"
@@ -33,6 +34,7 @@
         app:bigScaleWidth="2.5dp"
         app:scaleInterval="11.5dp"
         app:currentScale="666"
+        app:cursorDrawable="@drawable/cursor_shape"
         android:layout_centerInParent="true"
         />
 

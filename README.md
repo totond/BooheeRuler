@@ -12,16 +12,16 @@
 　　通过观察原作的效果图和下载了薄荷健康APP观察原控件（不过最新版本已经改了一下UI），我仿写的这个BooheeRuler主要实现了以下技术难点（对我来说）：
  - 滑动界面
  - 触摸滑动后的惯性滚动
- - 让光标保持在中间，不随尺子滚动（这里用了外部包一个ViewGroup，这样搞到后面封装很麻烦，不知道有没有更好的方法）
+ - 让光标保持在中间，不随尺子滚动
  - 计算光标选中的刻度
  - 让触摸滑动、惯性滚动之后，回滚到最近的整点刻度，如最后滑动到66.5和66.6中间靠右，则回滚到66.6
 
 ## 使用
 
 ### Gradle
-
+（最新版可能还在JCenter审核。。。）
 ```
-    compile 'com.yanzhikai:BooheeRuler:0.0.2'
+    compile 'com.yanzhikai:BooheeRuler:0.0.3'
 ```
 
 ### 使用方法
@@ -99,8 +99,8 @@ public class MainActivity extends AppCompatActivity {
 |scaleInterval | 尺子每条刻度线之间的距离    | dimension| 18px|
 |numberTextColor | 尺子数字文字颜色  | color| #2B2E2B|
 |scaleColor | 尺子刻度线的颜色  | color| #e2e5e2|
-|cursorColor | 尺子中间选定光标颜色  | color| #4bbb74|
 |currentScale | 尺子初始选定刻度  | float| (maxScale + minScale)/2|
+|cursorDrawable | 尺子中间选定光标的Drawable(会把drawable伸缩到设定的宽高上) | dimension| @drawable/cursor_shape|
 
 #### KgNumberLayout属性
 
@@ -126,9 +126,6 @@ public interface RulerCallback {
 ```
 　　实现了这个接口之后，再调用`BooheeRuler.setCallback(RulerCallback rulerCallback)`方法传入即可。
 
-
-## 后续
-　　源码里面的注释已经写得差不多，后面有空的话可能会记录一下实现原理，分享出来给大家，希望各位可以多多指点小弟。
 
 
 ## 关于作者
