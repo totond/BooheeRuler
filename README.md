@@ -1,7 +1,8 @@
 # BooheeRuler
 　　这是仿写薄荷健康里面体重选择尺的控件，是为了参加[HenCoder「仿写酷界面」活动](https://juejin.im/post/59e019c1f265da4319554878),效果如下：
 
-![](https://i.imgur.com/RHcyTgY.gif)
+![](https://i.imgur.com/PVoVWlI.gif)
+
 
 然后这是原效果：
 
