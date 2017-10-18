@@ -40,6 +40,8 @@ public class BooheeRuler extends RelativeLayout {
     private @ColorInt int mScaleColor = getResources().getColor(R.color.colorGray);
     //光标颜色
     private @ColorInt int mCursorColor = getResources().getColor(R.color.colorForgiven);
+    //初始的当前刻度
+    private float mCurrentScale = 0;
 
     public BooheeRuler(Context context) {
         super(context);
@@ -77,16 +79,18 @@ public class BooheeRuler extends RelativeLayout {
         mCursorColor = typedArray.getColor(R.styleable.BooheeRuler_cursorColor,mCursorColor);
         mTextColor = typedArray.getColor(R.styleable.BooheeRuler_numberTextColor,mTextColor);
         mScaleColor = typedArray.getColor(R.styleable.BooheeRuler_scaleColor,mScaleColor);
+        mCurrentScale = typedArray.getFloat(R.styleable.BooheeRuler_currentScale,(mMaxScale + mMinScale)/2);
         typedArray.recycle();
     }
 
     private void initRuler(Context context) {
         mContext = context;
         mInnerRuler = new InnerRuler(context,this);
-        //设置全屏
+        //设置全屏，加入InnerRuler
         LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mInnerRuler.setLayoutParams(layoutParams);
         addView(mInnerRuler);
+        //设置ViewGroup可画
         setWillNotDraw(false);
 
         initPaint();
@@ -115,21 +119,24 @@ public class BooheeRuler extends RelativeLayout {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
-        //画中间的选定光标
+        //画中间的选定光标，要在这里画，因为dispatchDraw()执行在onDraw()后面，这样子光标才能不被尺子的刻度遮蔽
         canvas.drawLine(canvas.getWidth() / 2, 0, canvas.getWidth() / 2, mCursorHeight, mCPaint);
     }
 
+    //设置回调
     public void setCallback(RulerCallback rulerCallback) {
         mInnerRuler.setRulerCallback(rulerCallback);
 
     }
 
+    //设置当前进度
     public void setCurrentScale(float currentScale) {
+        mCurrentScale = currentScale;
         mInnerRuler.setCurrentScale(currentScale);
     }
 
     public float getCurrentScale() {
-        return mInnerRuler.getCurrentScale();
+        return mCurrentScale;
     }
 
     public void setMinScale(int minScale) {

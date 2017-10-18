@@ -2,9 +2,7 @@ package yanzhikai.ruler;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.annotation.Px;
 import android.util.AttributeSet;
@@ -23,9 +21,8 @@ import android.widget.OverScroller;
 public class InnerRuler extends View {
     private final String TAG = "ruler";
     private Context mContext;
-
+    //画笔
     private Paint mSmallScalePaint, mBigScalePaint, mTextPaint;
-
     //当前刻度值
     private float mCurrentScale = 0;
     //最大刻度数
@@ -70,16 +67,16 @@ public class InnerRuler extends View {
     private void init(Context context){
         mContext = context;
 
-
         mMaxLength = mParent.getMaxScale() - mParent.getMinScale();
-        mCurrentScale = (mParent.getMaxScale() + mParent.getMinScale()) / 2;
+        mCurrentScale = mParent.getCurrentScale();
 
         initPaints();
 
-        mVelocityTracker = VelocityTracker.obtain();
         mOverScroller = new OverScroller(mContext);
 
 //        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+        //配置速度
+        mVelocityTracker = VelocityTracker.obtain();
         mMaximumVelocity = ViewConfiguration.get(context)
                 .getScaledMaximumFlingVelocity();
         mMinimumVelocity = ViewConfiguration.get(context)
@@ -135,7 +132,8 @@ public class InnerRuler extends View {
         }
     }
 
-    //处理滑动
+    //处理滑动，主要是触摸的时候通过计算现在的event坐标和上一个的位移量来决定scrollBy()的多少
+    //滑动完之后计算速度是否满足Fling，满足则使用OverScroller来计算Fling滑动
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         float currentX = event.getX();
@@ -206,16 +204,21 @@ public class InnerRuler extends View {
 
     }
 
+    //直接跳转到当前刻度
     public void goToScale(float scale){
-
-        scrollTo(scaleToScrollX(scale),0);
-        mCurrentScale = scale;
+        mCurrentScale = Math.round(scale);
+        scrollTo(scaleToScrollX(mCurrentScale),0);
+        if (mRulerCallback != null){
+            mRulerCallback.onScaleChanging(mCurrentScale);
+        }
     }
 
+    //把滑动偏移量scrollX转化为刻度Scale
     private float scrollXtoScale(int scrollX){
         return ((float) (scrollX + mHalfWidth) / mLength) *  mMaxLength + mParent.getMinScale();
     }
 
+    //把Scale转化为ScrollX
     private int scaleToScrollX(float scale){
         return (int) ((scale - mParent.getMinScale()) / mMaxLength * mLength - mHalfWidth);
     }
@@ -252,9 +255,10 @@ public class InnerRuler extends View {
         mMaxPositionX = mLength - mHalfWidth;
     }
 
+    //设置尺子当前刻度
     public void setCurrentScale(float currentScale) {
         this.mCurrentScale = currentScale;
-        scrollBackToCurrentScale();
+        goToScale(mCurrentScale);
     }
 
     public void setRulerCallback(RulerCallback RulerCallback) {

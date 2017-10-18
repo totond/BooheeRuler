@@ -6,33 +6,24 @@
     android:layout_height="match_parent"
     tools:context="yanzhikai.booheeruler.MainActivity">
 
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/tv_scale"-->
-        <!--android:textSize="30sp"-->
-        <!--android:textColor="@color/colorDeepGreen"-->
-        <!--android:layout_above="@+id/br"-->
-        <!--android:text="Hello World!"-->
-        <!--android:layout_centerHorizontal="true"-->
-
-         <!--/>-->
+    <!--数字和单位-->
     <yanzhikai.ruler.KgNumberLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/br"
-        app:scaleTextSize="50dp"
-        app:kgTextSize="25dp"
+        app:scaleTextSize="50sp"
+        app:kgTextSize="20sp"
         android:layout_marginBottom="20dp"
         android:id="@+id/knl"/>
 
+    <!--尺子-->
     <yanzhikai.ruler.BooheeRuler
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:id="@+id/br"
         android:background="@color/colorDirtyWithe"
-        app:minScale="666"
-        app:maxScale="1111"
+        app:minScale="464"
+        app:maxScale="2000"
         app:numberTextSize="22sp"
         app:textMarginTop="80dp"
         app:cursorHeight="45dp"
@@ -40,7 +31,8 @@
         app:smallScaleWidth="1.5dp"
         app:bigScaleLength="40dp"
         app:bigScaleWidth="2.5dp"
-        app:scaleInterval="12dp"
+        app:scaleInterval="11.5dp"
+        app:currentScale="666"
         android:layout_centerInParent="true"
         />
 

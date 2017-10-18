@@ -7,20 +7,22 @@
         <attr name="smallScaleWidth" format="dimension"/>
         <attr name="bigScaleLength" format="dimension"/>
         <attr name="bigScaleWidth" format="dimension"/>
-        <attr name="cursorWidth" format="dimension"/>
         <attr name="cursorHeight" format="dimension"/>
+        <attr name="cursorWidth" format="dimension"/>
         <attr name="textMarginTop" format="dimension"/>
         <attr name="numberTextSize" format="dimension"/>
         <attr name="scaleInterval" format="dimension"/>
         <attr name="numberTextColor" format="color"/>
         <attr name="scaleColor" format="color"/>
         <attr name="cursorColor" format="color"/>
+        <attr name="currentScale" format="float"/>
     </declare-styleable>
 
     <declare-styleable name="KgNumberLayout">
         <attr name="scaleTextSize" format="dimension"/>
         <attr name="kgTextSize" format="dimension"/>
-        <attr name="scaleTextColor" format="dimension"/>
-        <attr name="kgTextColor" format="dimension"/>
+        <attr name="scaleTextColor" format="color"/>
+        <attr name="kgTextColor" format="color"/>
+        <attr name="kgUnitText" format="string"/>
     </declare-styleable>
 </resources>

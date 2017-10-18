@@ -6,7 +6,6 @@ import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -21,6 +20,8 @@ public class KgNumberLayout extends RelativeLayout implements RulerCallback {
     //字体颜色
     private @ColorInt int mScaleTextColor = getResources().getColor(R.color.colorForgiven);
     private @ColorInt int mKgTextColor = getResources().getColor(R.color.colorForgiven);
+    //kg单位文字
+    private String mUnitText = "kg";
 
 
     public KgNumberLayout(Context context) {
@@ -45,6 +46,11 @@ public class KgNumberLayout extends RelativeLayout implements RulerCallback {
         mKgTextSize = typedArray.getDimension(R.styleable.KgNumberLayout_kgTextSize,mKgTextSize);
         mScaleTextColor = typedArray.getColor(R.styleable.KgNumberLayout_scaleTextColor,mScaleTextColor);
         mKgTextColor = typedArray.getColor(R.styleable.KgNumberLayout_kgTextColor,mKgTextColor);
+        String text = typedArray.getString(R.styleable.KgNumberLayout_kgUnitText);
+        if (text != null){
+            mUnitText = null;
+        }
+        typedArray.recycle();
 
     }
 
@@ -58,11 +64,12 @@ public class KgNumberLayout extends RelativeLayout implements RulerCallback {
 
         tv_kg.setTextSize(TypedValue.COMPLEX_UNIT_PX,mKgTextSize);
         tv_kg.setTextColor(mKgTextColor);
+        tv_kg.setText(mUnitText);
     }
 
     public void bindRuler(BooheeRuler booheeRuler){
         booheeRuler.setCallback(this);
-        tv_scale.setText(String.valueOf(booheeRuler.getCurrentScale()));
+//        tv_scale.setText(String.valueOf(booheeRuler.getCurrentScale()));
     }
 
     @Override
