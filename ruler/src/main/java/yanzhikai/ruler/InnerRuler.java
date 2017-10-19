@@ -3,6 +3,7 @@ package yanzhikai.ruler;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.Px;
 import android.util.AttributeSet;
@@ -111,6 +112,14 @@ public class InnerRuler extends View {
         mTextPaint.setTextAlign(Paint.Align.CENTER);
 //        mTextPaint.setStrokeJoin(Paint.Join.ROUND);
 
+    }
+
+    //API小于18则关闭硬件加速，否则setAntiAlias()方法不生效
+    private void checkAPILevel(){
+        if (Build.VERSION.SDK_INT < 18){
+            setLayerType(LAYER_TYPE_NONE,null);
+        }
+        setLayerType(LAYER_TYPE_NONE,null);
     }
 
     @Override
