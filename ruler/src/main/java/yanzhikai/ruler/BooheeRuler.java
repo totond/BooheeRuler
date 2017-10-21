@@ -102,6 +102,7 @@ public class BooheeRuler extends RelativeLayout {
         initDrawable();
     }
 
+    //在宽高初始化之后定义光标Drawable的边界
     private void initDrawable() {
         getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override

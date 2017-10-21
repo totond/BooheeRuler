@@ -28,7 +28,7 @@ public class InnerRuler extends View {
     private float mCurrentScale = 0;
     //最大刻度数
     private int mMaxLength = 0;
-    //长度
+    //长度、最小可滑动值、最大可滑动值
     private int mLength, mMinPositionX = 0, mMaxPositionX = 0;
     //控制滑动
     private OverScroller mOverScroller;
@@ -91,6 +91,7 @@ public class InnerRuler extends View {
                 goToScale(mCurrentScale);
             }
         });
+        checkAPILevel();
     }
 
     //初始化画笔
@@ -119,7 +120,6 @@ public class InnerRuler extends View {
         if (Build.VERSION.SDK_INT < 18){
             setLayerType(LAYER_TYPE_NONE,null);
         }
-        setLayerType(LAYER_TYPE_NONE,null);
     }
 
     @Override
@@ -173,7 +173,6 @@ public class InnerRuler extends View {
                     scrollBackToCurrentScale();
                 }
                 mVelocityTracker.clear();
-
                 break;
             case MotionEvent.ACTION_CANCEL:
                 if (!mOverScroller.isFinished())
@@ -234,10 +233,12 @@ public class InnerRuler extends View {
 
     //把移动后光标对准距离最近的刻度，就是回弹到最近刻度
     private void scrollBackToCurrentScale(){
+        //渐变回弹
         mCurrentScale = Math.round(mCurrentScale);
         mOverScroller.startScroll(getScrollX(),0,scaleToScrollX(mCurrentScale) - getScrollX(),0,1000);
         invalidate();
 
+        //立刻回弹
 //        scrollTo(scaleToScrollX(mCurrentScale),0);
     }
 
@@ -255,6 +256,7 @@ public class InnerRuler extends View {
         }
     }
 
+    //获取控件宽高，设置相应信息
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
