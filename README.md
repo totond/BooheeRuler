@@ -21,7 +21,7 @@
 ### Gradle
 
 ```
-    compile 'com.yanzhikai:BooheeRuler:0.0.3'
+    compile 'com.yanzhikai:BooheeRuler:0.0.4'
 ```
 
 ### 使用方法
