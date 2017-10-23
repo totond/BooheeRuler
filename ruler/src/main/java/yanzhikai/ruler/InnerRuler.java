@@ -130,13 +130,16 @@ public class InnerRuler extends View {
 
     //画刻度和字
     private void drawScale(Canvas canvas) {
+        Log.d(TAG, "drawScale: scrollX:" + getScrollX());
         for (int i = mParent.getMinScale(); i <= mParent.getMaxScale(); i++){
             float locationX = (i - mParent.getMinScale()) * mParent.getInterval();
-            if (i % 10 == 0) {
-                canvas.drawLine(locationX, 0, locationX, mParent.getBigScaleLength(), mBigScalePaint);
-                canvas.drawText(String.valueOf(i/10), locationX, mParent.getTextMarginTop(), mTextPaint);
-            }else {
-                canvas.drawLine(locationX, 0, locationX, mParent.getSmallScaleLength(), mSmallScalePaint);
+            if (locationX >= getScrollX() && locationX <= (getScrollX() + canvas.getWidth())) {
+                if (i % 10 == 0) {
+                    canvas.drawLine(locationX, 0, locationX, mParent.getBigScaleLength(), mBigScalePaint);
+                    canvas.drawText(String.valueOf(i / 10), locationX, mParent.getTextMarginTop(), mTextPaint);
+                } else {
+                    canvas.drawLine(locationX, 0, locationX, mParent.getSmallScaleLength(), mSmallScalePaint);
+                }
             }
         }
     }
@@ -223,12 +226,12 @@ public class InnerRuler extends View {
 
     //把滑动偏移量scrollX转化为刻度Scale
     private float scrollXtoScale(int scrollX){
-        return ((float) (scrollX + mHalfWidth) / mLength) *  mMaxLength + mParent.getMinScale();
+        return ((float) (scrollX - mMinPositionX) / mLength) *  mMaxLength + mParent.getMinScale();
     }
 
     //把Scale转化为ScrollX
     private int scaleToScrollX(float scale){
-        return (int) ((scale - mParent.getMinScale()) / mMaxLength * mLength - mHalfWidth);
+        return (int) ((scale - mParent.getMinScale()) / mMaxLength * mLength + mMinPositionX);
     }
 
     //把移动后光标对准距离最近的刻度，就是回弹到最近刻度
