@@ -34,6 +34,7 @@
         app:bigScaleWidth="2.5dp"
         app:scaleInterval="11.5dp"
         app:currentScale="666"
+        app:count="10"
         app:cursorDrawable="@drawable/cursor_shape"
         android:layout_centerInParent="true"
         />

@@ -19,9 +19,9 @@
 ## 使用
 
 ### Gradle
-
+（最新上传的0.0.5版本可能要等几个小时JCenter审核）
 ```
-    compile 'com.yanzhikai:BooheeRuler:0.0.4'
+    compile 'com.yanzhikai:BooheeRuler:0.0.5'
 ```
 
 ### 使用方法
@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
 |scaleColor | 尺子刻度线的颜色  | color| #e2e5e2|
 |currentScale | 尺子初始选定刻度  | float| (maxScale + minScale)/2|
 |cursorDrawable | 尺子中间选定光标的Drawable(会把drawable伸缩到设定的宽高上) | dimension| @drawable/cursor_shape|
+|count | 一个大刻度格子里面的小刻度格子数| integer|10|
 
 #### KgNumberLayout属性
 
@@ -127,6 +128,11 @@ public interface RulerCallback {
 　　实现了这个接口之后，再调用`BooheeRuler.setCallback(RulerCallback rulerCallback)`方法传入即可。
 
 
+## 更新
+
+ - 2017/10/23 **version 0.0.5**: 
+     - 修改了画刻度的方法，改为只画当前屏幕显示的刻度
+     - 增加了count属性，用于设置一个大刻度格子里面的小刻度格子数（就是），默认是10
 
 ## 关于作者
  > id：炎之铠

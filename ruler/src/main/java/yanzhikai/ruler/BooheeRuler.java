@@ -42,6 +42,8 @@ public class BooheeRuler extends RelativeLayout {
     private @ColorInt int mScaleColor = getResources().getColor(R.color.colorGray);
     //初始的当前刻度
     private float mCurrentScale = 0;
+    //一格大刻度多少格小刻度
+    private int mCount = 10;
     //光标drawable
     private Drawable mCursorDrawable;
 
@@ -81,6 +83,7 @@ public class BooheeRuler extends RelativeLayout {
         mTextColor = typedArray.getColor(R.styleable.BooheeRuler_numberTextColor,mTextColor);
         mScaleColor = typedArray.getColor(R.styleable.BooheeRuler_scaleColor,mScaleColor);
         mCurrentScale = typedArray.getFloat(R.styleable.BooheeRuler_currentScale,(mMaxScale + mMinScale)/2);
+        mCount = typedArray.getInt(R.styleable.BooheeRuler_count,mCount);
         mCursorDrawable = typedArray.getDrawable(R.styleable.BooheeRuler_cursorDrawable);
         if (mCursorDrawable == null){
             mCursorDrawable = getResources().getDrawable(R.drawable.cursor_shape);
@@ -260,5 +263,11 @@ public class BooheeRuler extends RelativeLayout {
         return mScaleColor;
     }
 
+    public void setCount(int mCount) {
+        this.mCount = mCount;
+    }
 
+    public int getCount() {
+        return mCount;
+    }
 }
