@@ -19,7 +19,7 @@
 ## 使用
 
 ### Gradle
-（最新上传的0.0.5版本可能要等几个小时JCenter审核）
+
 ```
     compile 'com.yanzhikai:BooheeRuler:0.0.5'
 ```
