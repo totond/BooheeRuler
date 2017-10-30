@@ -22,6 +22,7 @@
         android:layout_height="100dp"
         android:id="@+id/br"
         android:background="@color/colorDirtyWithe"
+        app:paddingStartAndEnd="50dp"
         app:minScale="464"
         app:maxScale="2000"
         app:numberTextSize="22sp"

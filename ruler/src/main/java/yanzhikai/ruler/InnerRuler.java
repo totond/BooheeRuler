@@ -280,7 +280,7 @@ public class InnerRuler extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         mLength = (mParent.getMaxScale() - mParent.getMinScale()) * mParent.getInterval();
-        mHalfWidth = getMeasuredWidth()/2;
+        mHalfWidth = w / 2;
         mMinPositionX = -mHalfWidth;
         mMaxPositionX = mLength - mHalfWidth;
     }

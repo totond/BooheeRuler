@@ -7,6 +7,8 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
@@ -15,7 +17,7 @@ import android.widget.RelativeLayout;
  * 用于包着尺子的外壳，用于画选取光标、外壳
  */
 
-public class BooheeRuler extends RelativeLayout {
+public class BooheeRuler extends ViewGroup {
     private final String TAG = "ruler";
     private Context mContext;
     //内部的尺子
@@ -46,6 +48,8 @@ public class BooheeRuler extends RelativeLayout {
     private int mCount = 10;
     //光标drawable
     private Drawable mCursorDrawable;
+    //尺子两端的padding
+    private int mPaddingStartAndEnd = 0;
 
     public BooheeRuler(Context context) {
         super(context);
@@ -88,6 +92,7 @@ public class BooheeRuler extends RelativeLayout {
         if (mCursorDrawable == null){
             mCursorDrawable = getResources().getDrawable(R.drawable.cursor_shape);
         }
+        mPaddingStartAndEnd = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_paddingStartAndEnd,mPaddingStartAndEnd);
         typedArray.recycle();
     }
 
@@ -129,6 +134,23 @@ public class BooheeRuler extends RelativeLayout {
     }
 
     @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+
+        int newWidthSize = widthSize - mPaddingStartAndEnd * 2;
+        if (newWidthSize <= 0){
+            Log.d(TAG, "mPaddingStartAndEnd设置过大，无效！");
+            newWidthSize = widthSize;
+        }
+        super.onMeasure(MeasureSpec.makeMeasureSpec(newWidthSize,widthMode), MeasureSpec.makeMeasureSpec(heightSize,heightMode));
+    }
+
+
+
+    @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         //画上面的轮廓线
@@ -141,6 +163,11 @@ public class BooheeRuler extends RelativeLayout {
         //画中间的选定光标，要在这里画，因为dispatchDraw()执行在onDraw()后面，这样子光标才能不被尺子的刻度遮蔽
         mCursorDrawable.draw(canvas);
 
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        mInnerRuler.layout(0,0,r - l,b - t);
     }
 
     //设置回调

@@ -16,6 +16,7 @@
         <attr name="scaleColor" format="color"/>
         <attr name="cursorDrawable" format="dimension"/>
         <attr name="currentScale" format="float"/>
+        <attr name="paddingStartAndEnd" format="dimension"/>
         <attr name="count" format="integer"/>
     </declare-styleable>
 
