@@ -166,8 +166,7 @@ public class InnerRuler extends View {
                 if (!mOverScroller.isFinished()) {
                     mOverScroller.abortAnimation();
                 }
-                mVelocityTracker.clear();
-                mVelocityTracker.addMovement(event);
+
                 mLastX = currentX;
                 break;
             case MotionEvent.ACTION_MOVE:
