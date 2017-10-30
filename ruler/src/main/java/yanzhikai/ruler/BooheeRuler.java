@@ -8,10 +8,8 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.RelativeLayout;
 
 /**
  * 用于包着尺子的外壳，用于画选取光标、外壳
@@ -31,7 +29,7 @@ public class BooheeRuler extends ViewGroup {
     //大小刻度的长度
     private int mSmallScaleLength = 30, mBigScaleLength = 60;
     //大小刻度的粗细
-    private int mSmallScaleWidth = 3,mBigScaleWidth = 5;
+    private int mSmallScaleWidth = 3, mBigScaleWidth = 5;
     //数字字体大小
     private int mTextSize = 28;
     //数字Text距离顶部高度
@@ -39,9 +37,13 @@ public class BooheeRuler extends ViewGroup {
     //刻度间隔
     private int mInterval = 18;
     //数字Text颜色
-    private @ColorInt int mTextColor = getResources().getColor(R.color.colorLightBlack);
+    private
+    @ColorInt
+    int mTextColor = getResources().getColor(R.color.colorLightBlack);
     //刻度颜色
-    private @ColorInt int mScaleColor = getResources().getColor(R.color.colorGray);
+    private
+    @ColorInt
+    int mScaleColor = getResources().getColor(R.color.colorGray);
     //初始的当前刻度
     private float mCurrentScale = 0;
     //一格大刻度多少格小刻度
@@ -59,46 +61,46 @@ public class BooheeRuler extends ViewGroup {
 
     public BooheeRuler(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initAttrs(context,attrs);
+        initAttrs(context, attrs);
         initRuler(context);
 
     }
 
     public BooheeRuler(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initAttrs(context,attrs);
+        initAttrs(context, attrs);
         initRuler(context);
 
     }
 
-    private void initAttrs(Context context, AttributeSet attrs){
-        TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs,R.styleable.BooheeRuler,0,0);
-        mMinScale = typedArray.getInteger(R.styleable.BooheeRuler_minScale,mMinScale);
-        mMaxScale = typedArray.getInteger(R.styleable.BooheeRuler_maxScale,mMaxScale);
-        mCursorWidth = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_cursorWidth,mCursorWidth);
-        mCursorHeight = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_cursorHeight,mCursorHeight);
-        mSmallScaleWidth = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_smallScaleWidth,mSmallScaleWidth);
-        mSmallScaleLength = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_smallScaleLength,mSmallScaleLength);
-        mBigScaleWidth = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_bigScaleWidth,mBigScaleWidth);
-        mBigScaleLength = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_bigScaleLength,mBigScaleLength);
-        mTextSize = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_numberTextSize,mTextSize);
-        mTextMarginTop = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_textMarginTop,mTextMarginTop);
-        mInterval = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_scaleInterval,mInterval);
-        mTextColor = typedArray.getColor(R.styleable.BooheeRuler_numberTextColor,mTextColor);
-        mScaleColor = typedArray.getColor(R.styleable.BooheeRuler_scaleColor,mScaleColor);
-        mCurrentScale = typedArray.getFloat(R.styleable.BooheeRuler_currentScale,(mMaxScale + mMinScale)/2);
-        mCount = typedArray.getInt(R.styleable.BooheeRuler_count,mCount);
+    private void initAttrs(Context context, AttributeSet attrs) {
+        TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.BooheeRuler, 0, 0);
+        mMinScale = typedArray.getInteger(R.styleable.BooheeRuler_minScale, mMinScale);
+        mMaxScale = typedArray.getInteger(R.styleable.BooheeRuler_maxScale, mMaxScale);
+        mCursorWidth = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_cursorWidth, mCursorWidth);
+        mCursorHeight = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_cursorHeight, mCursorHeight);
+        mSmallScaleWidth = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_smallScaleWidth, mSmallScaleWidth);
+        mSmallScaleLength = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_smallScaleLength, mSmallScaleLength);
+        mBigScaleWidth = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_bigScaleWidth, mBigScaleWidth);
+        mBigScaleLength = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_bigScaleLength, mBigScaleLength);
+        mTextSize = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_numberTextSize, mTextSize);
+        mTextMarginTop = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_textMarginTop, mTextMarginTop);
+        mInterval = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_scaleInterval, mInterval);
+        mTextColor = typedArray.getColor(R.styleable.BooheeRuler_numberTextColor, mTextColor);
+        mScaleColor = typedArray.getColor(R.styleable.BooheeRuler_scaleColor, mScaleColor);
+        mCurrentScale = typedArray.getFloat(R.styleable.BooheeRuler_currentScale, (mMaxScale + mMinScale) / 2);
+        mCount = typedArray.getInt(R.styleable.BooheeRuler_count, mCount);
         mCursorDrawable = typedArray.getDrawable(R.styleable.BooheeRuler_cursorDrawable);
-        if (mCursorDrawable == null){
+        if (mCursorDrawable == null) {
             mCursorDrawable = getResources().getDrawable(R.drawable.cursor_shape);
         }
-        mPaddingStartAndEnd = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_paddingStartAndEnd,mPaddingStartAndEnd);
+        mPaddingStartAndEnd = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_paddingStartAndEnd, mPaddingStartAndEnd);
         typedArray.recycle();
     }
 
     private void initRuler(Context context) {
         mContext = context;
-        mInnerRuler = new InnerRuler(context,this);
+        mInnerRuler = new InnerRuler(context, this);
         //设置全屏，加入InnerRuler
         LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mInnerRuler.setLayoutParams(layoutParams);
@@ -116,8 +118,8 @@ public class BooheeRuler extends ViewGroup {
             @Override
             public boolean onPreDraw() {
                 getViewTreeObserver().removeOnPreDrawListener(this);
-                mCursorDrawable.setBounds((getWidth() - mCursorWidth) / 2,0
-                        ,(getWidth() + mCursorWidth) / 2,mCursorHeight);
+                mCursorDrawable.setBounds((getWidth() - mCursorWidth) / 2, 0
+                        , (getWidth() + mCursorWidth) / 2, mCursorHeight);
                 return false;
             }
         });
@@ -141,13 +143,12 @@ public class BooheeRuler extends ViewGroup {
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 
         int newWidthSize = widthSize - mPaddingStartAndEnd * 2;
-        if (newWidthSize <= 0){
-            Log.d(TAG, "mPaddingStartAndEnd设置过大，无效！");
+        if (newWidthSize <= 0) {
+            Log.d(TAG, "mPaddingStartAndEnd设置过大，设置无效！");
             newWidthSize = widthSize;
         }
-        super.onMeasure(MeasureSpec.makeMeasureSpec(newWidthSize,widthMode), MeasureSpec.makeMeasureSpec(heightSize,heightMode));
+        super.onMeasure(MeasureSpec.makeMeasureSpec(newWidthSize, widthMode), MeasureSpec.makeMeasureSpec(heightSize, heightMode));
     }
-
 
 
     @Override
@@ -167,7 +168,7 @@ public class BooheeRuler extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        mInnerRuler.layout(0,0,r - l,b - t);
+        mInnerRuler.layout(0, 0, r - l, b - t);
     }
 
     //设置回调

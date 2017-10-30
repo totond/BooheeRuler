@@ -46,6 +46,8 @@ public class InnerRuler extends View {
     private RulerCallback mRulerCallback;
     //一格大刻度多少格小刻度
     private int mCount = 10;
+    //提前刻画量
+    private int mDrawOffset = 0;
 
     private BooheeRuler mParent;
 
@@ -73,6 +75,7 @@ public class InnerRuler extends View {
         mMaxLength = mParent.getMaxScale() - mParent.getMinScale();
         mCurrentScale = mParent.getCurrentScale();
         mCount = mParent.getCount();
+        mDrawOffset = mCount * mParent.getInterval() / 2;
 
         initPaints();
 
@@ -133,10 +136,10 @@ public class InnerRuler extends View {
 
     //画刻度和字
     private void drawScale(Canvas canvas) {
-        Log.d(TAG, "drawScale: scrollX:" + getScrollX());
         for (float i = mParent.getMinScale(); i <= mParent.getMaxScale(); i++){
             float locationX = (i - mParent.getMinScale()) * mParent.getInterval();
-            if (locationX > getScrollX() && locationX < (getScrollX() + canvas.getWidth())) {
+
+            if (locationX > getScrollX() - mDrawOffset && locationX < (getScrollX() + canvas.getWidth() + mDrawOffset)) {
                 if (i % mCount == 0) {
                     canvas.drawLine(locationX, 0, locationX, mParent.getBigScaleLength(), mBigScalePaint);
                     canvas.drawText(String.valueOf(i / 10), locationX, mParent.getTextMarginTop(), mTextPaint);
