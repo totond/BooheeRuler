@@ -152,6 +152,10 @@ public class InnerRuler extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         float currentX = event.getX();
+        //开始速度检测
+        if (mVelocityTracker == null) {
+            mVelocityTracker = VelocityTracker.obtain();
+        }
         mVelocityTracker.addMovement(event);
 
         switch (event.getAction()){
@@ -178,12 +182,21 @@ public class InnerRuler extends View {
                 }else {
                     scrollBackToCurrentScale();
                 }
-                mVelocityTracker.clear();
+                //VelocityTracker回收
+                if (mVelocityTracker != null) {
+                    mVelocityTracker.recycle();
+                    mVelocityTracker = null;
+                }
                 break;
             case MotionEvent.ACTION_CANCEL:
                 if (!mOverScroller.isFinished())
                 {
                     mOverScroller.abortAnimation();
+                }
+                //VelocityTracker回收
+                if (mVelocityTracker != null) {
+                    mVelocityTracker.recycle();
+                    mVelocityTracker = null;
                 }
                 break;
         }
