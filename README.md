@@ -21,7 +21,7 @@
 ### Gradle
 
 ```
-    compile 'com.yanzhikai:BooheeRuler:0.0.5'
+    compile 'com.yanzhikai:BooheeRuler:0.0.6'
 ```
 
 ### 使用方法
@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
 |currentScale | 尺子初始选定刻度  | float| (maxScale + minScale)/2|
 |cursorDrawable | 尺子中间选定光标的Drawable(会把drawable伸缩到设定的宽高上) | dimension| @drawable/cursor_shape|
 |count | 一个大刻度格子里面的小刻度格子数| integer|10|
+|paddingStartAndEnd（最新版本新增） | 控制尺子两端的padding（设置这个会使尺子的实际宽度改变）| dimension|0|
 
 #### KgNumberLayout属性
 
@@ -133,6 +134,14 @@ public interface RulerCallback {
  - 2017/10/23 **version 0.0.5**: 
      - 修改了画刻度的方法，改为只画当前屏幕显示的刻度
      - 增加了count属性，用于设置一个大刻度格子里面的小刻度格子数，默认是10
+ - 2017/10/30 **version 0.0.6**: 
+     - 加入VelocityTracker的回收处理（之前只是clear并没有recycle），提高性能。
+     - 加入属性`paddingStartAndEnd`，用于控制尺子两端的padding。
+     - 让刻度的绘制前后多半大格，这样可以提前显示出下面的数字，让过渡不会变得那么突兀。
+     - 取消了一些不必要的log输出。
+
+## 开源协议
+　　BooheeRuler遵循Apache2.0协议。
 
 ## 关于作者
  > id：炎之铠
