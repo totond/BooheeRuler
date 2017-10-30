@@ -141,7 +141,7 @@ public interface RulerCallback {
      - 取消了一些不必要的log输出。
 
 ## 开源协议
-　　BooheeRuler遵循Apache2.0协议。
+　　BooheeRuler遵循MIT协议。
 
 ## 关于作者
  > id：炎之铠
