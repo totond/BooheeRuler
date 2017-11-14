@@ -25,17 +25,19 @@ public abstract class InnerRuler extends View {
     //最大刻度数
     protected int mMaxLength = 0;
     //长度、最小可滑动值、最大可滑动值
-    protected int mLength, mMinPositionX = 0, mMaxPositionX = 0;
+    protected int mLength, mMinPosition = 0, mMaxPosition = 0;
     //控制滑动
     protected OverScroller mOverScroller;
     //一格大刻度多少格小刻度
-    private int mCount = 10;
+    protected int mCount = 10;
     //提前刻画量
-    private int mDrawOffset = 0;
+    protected int mDrawOffset = 0;
     //速度获取
-    private VelocityTracker mVelocityTracker;
+    protected VelocityTracker mVelocityTracker;
     //惯性最大最小速度
-    private int mMaximumVelocity, mMinimumVelocity;
+    protected int mMaximumVelocity, mMinimumVelocity;
+    //回调接口
+    protected RulerCallback mRulerCallback;
 
     public InnerRuler(Context context, BooheeRuler booheeRuler) {
         super(context);
@@ -104,4 +106,18 @@ public abstract class InnerRuler extends View {
     }
 
     public abstract void goToScale(float scale);
+
+    //设置尺子当前刻度
+    public void setCurrentScale(float currentScale) {
+        this.mCurrentScale = currentScale;
+        goToScale(mCurrentScale);
+    }
+
+    public void setRulerCallback(RulerCallback RulerCallback) {
+        this.mRulerCallback = RulerCallback;
+    }
+
+    public float getCurrentScale() {
+        return mCurrentScale;
+    }
 }

@@ -9,7 +9,7 @@
         <attr name="bigScaleWidth" format="dimension"/>
         <attr name="cursorHeight" format="dimension"/>
         <attr name="cursorWidth" format="dimension"/>
-        <attr name="textMarginTop" format="dimension"/>
+        <attr name="textMarginHead" format="dimension"/>
         <attr name="numberTextSize" format="dimension"/>
         <attr name="scaleInterval" format="dimension"/>
         <attr name="numberTextColor" format="color"/>
@@ -18,6 +18,12 @@
         <attr name="currentScale" format="float"/>
         <attr name="paddingStartAndEnd" format="dimension"/>
         <attr name="count" format="integer"/>
+        <attr name="rulerStyle" format="enum">
+            <enum name="TOP_HEAD" value="1"/>
+            <enum name="BOTTOM_HEAD" value="2"/>
+            <enum name="LEFT_HEAD" value="3"/>
+            <enum name="RIGHT_HEAD" value="4"/>
+        </attr>
     </declare-styleable>
 
     <declare-styleable name="KgNumberLayout">

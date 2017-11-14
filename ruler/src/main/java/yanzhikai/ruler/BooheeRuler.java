@@ -6,10 +6,14 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
+import android.support.annotation.IntDef;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * 用于包着尺子的外壳，用于画选取光标、外壳
@@ -18,8 +22,14 @@ import android.view.ViewTreeObserver;
 public class BooheeRuler extends ViewGroup {
     private final String TAG = "ruler";
     private Context mContext;
+    //尺子Style定义
+    public static final int TOP_HEAD = 1 , BOTTOM_HEAD = 2, LEFT_HEAD = 3, RIGHT_HEAD = 4;
+    @IntDef({TOP_HEAD, BOTTOM_HEAD, LEFT_HEAD, RIGHT_HEAD})
+    @Retention(RetentionPolicy.SOURCE)
+    public  @interface RulerStyle {}
+    private @BooheeRuler.RulerStyle int mStyle = TOP_HEAD;
     //内部的尺子
-    private HorizontalRuler mHorizontalRuler;
+    private InnerRuler mInnerRuler;
     //最小最大刻度值(以0.1kg为单位)
     private int mMinScale = 464, mMaxScale = 2000;
     //中间光标画笔
@@ -33,7 +43,7 @@ public class BooheeRuler extends ViewGroup {
     //数字字体大小
     private int mTextSize = 28;
     //数字Text距离顶部高度
-    private int mTextMarginTop = 120;
+    private int mTextMarginHead = 120;
     //刻度间隔
     private int mInterval = 18;
     //数字Text颜色
@@ -73,6 +83,7 @@ public class BooheeRuler extends ViewGroup {
 
     }
 
+    @SuppressWarnings("WrongConstant")
     private void initAttrs(Context context, AttributeSet attrs) {
         TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.BooheeRuler, 0, 0);
         mMinScale = typedArray.getInteger(R.styleable.BooheeRuler_minScale, mMinScale);
@@ -84,7 +95,7 @@ public class BooheeRuler extends ViewGroup {
         mBigScaleWidth = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_bigScaleWidth, mBigScaleWidth);
         mBigScaleLength = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_bigScaleLength, mBigScaleLength);
         mTextSize = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_numberTextSize, mTextSize);
-        mTextMarginTop = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_textMarginTop, mTextMarginTop);
+        mTextMarginHead = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_textMarginHead, mTextMarginHead);
         mInterval = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_scaleInterval, mInterval);
         mTextColor = typedArray.getColor(R.styleable.BooheeRuler_numberTextColor, mTextColor);
         mScaleColor = typedArray.getColor(R.styleable.BooheeRuler_scaleColor, mScaleColor);
@@ -95,16 +106,31 @@ public class BooheeRuler extends ViewGroup {
             mCursorDrawable = getResources().getDrawable(R.drawable.cursor_shape);
         }
         mPaddingStartAndEnd = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_paddingStartAndEnd, mPaddingStartAndEnd);
+        mStyle = typedArray.getInt(R.styleable.BooheeRuler_rulerStyle,mStyle);
         typedArray.recycle();
     }
 
     private void initRuler(Context context) {
         mContext = context;
-        mHorizontalRuler = new HorizontalRuler(context, this);
+        switch (mStyle){
+            case TOP_HEAD:
+                mInnerRuler = new TopHeadRuler(context, this);
+                break;
+            case BOTTOM_HEAD:
+                mInnerRuler = new BottomHeadRuler(context, this);
+                break;
+            case LEFT_HEAD:
+                mInnerRuler = new LeftHeadRuler(context, this);
+                break;
+            case RIGHT_HEAD:
+                mInnerRuler = new RightHeadRuler(context, this);
+                break;
+        }
+
         //设置全屏，加入InnerRuler
         LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        mHorizontalRuler.setLayoutParams(layoutParams);
-        addView(mHorizontalRuler);
+        mInnerRuler.setLayoutParams(layoutParams);
+        addView(mInnerRuler);
         //设置ViewGroup可画
         setWillNotDraw(false);
 
@@ -118,8 +144,25 @@ public class BooheeRuler extends ViewGroup {
             @Override
             public boolean onPreDraw() {
                 getViewTreeObserver().removeOnPreDrawListener(this);
-                mCursorDrawable.setBounds((getWidth() - mCursorWidth) / 2, 0
-                        , (getWidth() + mCursorWidth) / 2, mCursorHeight);
+                switch (mStyle){
+                    case TOP_HEAD:
+                        mCursorDrawable.setBounds((getWidth() - mCursorWidth) / 2, 0
+                                , (getWidth() + mCursorWidth) / 2, mCursorHeight);
+                        break;
+                    case BOTTOM_HEAD:
+                        mCursorDrawable.setBounds((getWidth() - mCursorWidth) / 2, getHeight() - mCursorHeight
+                                , (getWidth() + mCursorWidth) / 2, getHeight());
+                        break;
+                    case LEFT_HEAD:
+                        mCursorDrawable.setBounds(0, (getHeight() - mCursorHeight) / 2
+                                , mCursorWidth, (getHeight() + mCursorHeight) / 2);
+                        break;
+                    case RIGHT_HEAD:
+                        mCursorDrawable.setBounds(getWidth() - mCursorWidth, (getHeight() - mCursorHeight) / 2
+                                , getWidth(),(getHeight() + mCursorHeight) / 2);
+                        break;
+                }
+
                 return false;
             }
         });
@@ -142,12 +185,27 @@ public class BooheeRuler extends ViewGroup {
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 
-        int newWidthSize = widthSize - mPaddingStartAndEnd * 2;
-        if (newWidthSize <= 0) {
-            Log.d(TAG, "mPaddingStartAndEnd设置过大，设置无效！");
-            newWidthSize = widthSize;
+        switch (mStyle){
+            case TOP_HEAD:
+            case BOTTOM_HEAD:
+                int newWidthSize = widthSize - mPaddingStartAndEnd * 2;
+                if (newWidthSize <= 0) {
+                    Log.e(TAG, "mPaddingStartAndEnd设置过大，设置无效！");
+                    newWidthSize = widthSize;
+                }
+                super.onMeasure(MeasureSpec.makeMeasureSpec(newWidthSize, widthMode), heightMeasureSpec);
+                break;
+            case LEFT_HEAD:
+            case RIGHT_HEAD:
+                int newHeightSize = heightSize - mPaddingStartAndEnd * 2;
+                if (newHeightSize <= 0) {
+                    Log.e(TAG, "mPaddingStartAndEnd设置过大，设置无效！");
+                    newHeightSize = heightSize;
+                }
+                super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(newHeightSize, heightMode));
+                break;
         }
-        super.onMeasure(MeasureSpec.makeMeasureSpec(newWidthSize, widthMode), MeasureSpec.makeMeasureSpec(heightSize, heightMode));
+
     }
 
 
@@ -168,19 +226,20 @@ public class BooheeRuler extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        mHorizontalRuler.layout(0, 0, r - l, b - t);
+
+        mInnerRuler.layout(0, 0, r - l, b - t);
     }
 
     //设置回调
     public void setCallback(RulerCallback rulerCallback) {
-        mHorizontalRuler.setRulerCallback(rulerCallback);
+        mInnerRuler.setRulerCallback(rulerCallback);
 
     }
 
     //设置当前进度
     public void setCurrentScale(float currentScale) {
         mCurrentScale = currentScale;
-        mHorizontalRuler.setCurrentScale(currentScale);
+        mInnerRuler.setCurrentScale(currentScale);
     }
 
     //如果控件尺寸变化，中间光标的位置也要重新定义
@@ -260,11 +319,11 @@ public class BooheeRuler extends ViewGroup {
     }
 
     public void setTextMarginTop(int textMarginTop) {
-        this.mTextMarginTop = textMarginTop;
+        this.mTextMarginHead = textMarginTop;
     }
 
-    public int getTextMarginTop() {
-        return mTextMarginTop;
+    public int getTextMarginHead() {
+        return mTextMarginHead;
     }
 
     public void setTextSize(int textSize) {
