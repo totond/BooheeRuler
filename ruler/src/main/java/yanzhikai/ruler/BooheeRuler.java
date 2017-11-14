@@ -19,7 +19,7 @@ public class BooheeRuler extends ViewGroup {
     private final String TAG = "ruler";
     private Context mContext;
     //内部的尺子
-    private InnerRuler mInnerRuler;
+    private HorizontalRuler mHorizontalRuler;
     //最小最大刻度值(以0.1kg为单位)
     private int mMinScale = 464, mMaxScale = 2000;
     //中间光标画笔
@@ -100,11 +100,11 @@ public class BooheeRuler extends ViewGroup {
 
     private void initRuler(Context context) {
         mContext = context;
-        mInnerRuler = new InnerRuler(context, this);
+        mHorizontalRuler = new HorizontalRuler(context, this);
         //设置全屏，加入InnerRuler
         LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        mInnerRuler.setLayoutParams(layoutParams);
-        addView(mInnerRuler);
+        mHorizontalRuler.setLayoutParams(layoutParams);
+        addView(mHorizontalRuler);
         //设置ViewGroup可画
         setWillNotDraw(false);
 
@@ -168,19 +168,19 @@ public class BooheeRuler extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        mInnerRuler.layout(0, 0, r - l, b - t);
+        mHorizontalRuler.layout(0, 0, r - l, b - t);
     }
 
     //设置回调
     public void setCallback(RulerCallback rulerCallback) {
-        mInnerRuler.setRulerCallback(rulerCallback);
+        mHorizontalRuler.setRulerCallback(rulerCallback);
 
     }
 
     //设置当前进度
     public void setCurrentScale(float currentScale) {
         mCurrentScale = currentScale;
-        mInnerRuler.setCurrentScale(currentScale);
+        mHorizontalRuler.setCurrentScale(currentScale);
     }
 
     //如果控件尺寸变化，中间光标的位置也要重新定义
