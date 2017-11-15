@@ -62,6 +62,10 @@ public class BooheeRuler extends ViewGroup {
     private Drawable mCursorDrawable;
     //尺子两端的padding
     private int mPaddingStartAndEnd = 0;
+    private int mPaddingLeft = 0,mPaddingTop = 0,mPaddingRight = 0,mPaddingBottom = 0;
+    //尺子背景
+    private Drawable mRulerBackGround;
+    private int mRulerBackGroundColor = getResources().getColor(R.color.colorDirtyWithe);
 
     public BooheeRuler(Context context) {
         super(context);
@@ -107,6 +111,10 @@ public class BooheeRuler extends ViewGroup {
         }
         mPaddingStartAndEnd = typedArray.getDimensionPixelSize(R.styleable.BooheeRuler_paddingStartAndEnd, mPaddingStartAndEnd);
         mStyle = typedArray.getInt(R.styleable.BooheeRuler_rulerStyle,mStyle);
+        mRulerBackGround = typedArray.getDrawable(R.styleable.BooheeRuler_rulerBackGround);
+        if (mRulerBackGround == null){
+            mRulerBackGroundColor = typedArray.getColor(R.styleable.BooheeRuler_rulerBackGround,mRulerBackGroundColor);
+        }
         typedArray.recycle();
     }
 
@@ -115,15 +123,19 @@ public class BooheeRuler extends ViewGroup {
         switch (mStyle){
             case TOP_HEAD:
                 mInnerRuler = new TopHeadRuler(context, this);
+                paddingHorizontal();
                 break;
             case BOTTOM_HEAD:
                 mInnerRuler = new BottomHeadRuler(context, this);
+                paddingHorizontal();
                 break;
             case LEFT_HEAD:
                 mInnerRuler = new LeftHeadRuler(context, this);
+                paddingVertical();
                 break;
             case RIGHT_HEAD:
                 mInnerRuler = new RightHeadRuler(context, this);
+                paddingVertical();
                 break;
         }
 
@@ -136,6 +148,15 @@ public class BooheeRuler extends ViewGroup {
 
         initPaint();
         initDrawable();
+        initRulerBackground();
+    }
+
+    private void initRulerBackground(){
+        if (mRulerBackGround != null){
+            mInnerRuler.setBackground(mRulerBackGround);
+        }else {
+            mInnerRuler.setBackgroundColor(mRulerBackGroundColor);
+        }
     }
 
     //在宽高初始化之后定义光标Drawable的边界
@@ -180,31 +201,8 @@ public class BooheeRuler extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        switch (mStyle){
-            case TOP_HEAD:
-            case BOTTOM_HEAD:
-                int newWidthSize = widthSize - mPaddingStartAndEnd * 2;
-                if (newWidthSize <= 0) {
-                    Log.e(TAG, "mPaddingStartAndEnd设置过大，设置无效！");
-                    newWidthSize = widthSize;
-                }
-                super.onMeasure(MeasureSpec.makeMeasureSpec(newWidthSize, widthMode), heightMeasureSpec);
-                break;
-            case LEFT_HEAD:
-            case RIGHT_HEAD:
-                int newHeightSize = heightSize - mPaddingStartAndEnd * 2;
-                if (newHeightSize <= 0) {
-                    Log.e(TAG, "mPaddingStartAndEnd设置过大，设置无效！");
-                    newHeightSize = heightSize;
-                }
-                super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(newHeightSize, heightMode));
-                break;
-        }
 
     }
 
@@ -212,8 +210,6 @@ public class BooheeRuler extends ViewGroup {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        //画上面的轮廓线
-        canvas.drawLine(0, 0, canvas.getWidth(), 0, mOutLinePaint);
     }
 
     @Override
@@ -226,8 +222,21 @@ public class BooheeRuler extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        mInnerRuler.layout(mPaddingLeft, mPaddingTop, r - l - mPaddingRight, b - t - mPaddingBottom);
+    }
 
-        mInnerRuler.layout(0, 0, r - l, b - t);
+    private void paddingHorizontal(){
+        mPaddingLeft = mPaddingStartAndEnd;
+        mPaddingRight = mPaddingStartAndEnd;
+        mPaddingTop = 0;
+        mPaddingBottom = 0;
+    }
+
+    private void paddingVertical(){
+        mPaddingTop = mPaddingStartAndEnd;
+        mPaddingBottom = mPaddingStartAndEnd;
+        mPaddingLeft = 0;
+        mPaddingRight = 0;
     }
 
     //设置回调

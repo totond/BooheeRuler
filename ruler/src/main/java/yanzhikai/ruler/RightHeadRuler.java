@@ -4,9 +4,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 
 /**
- * Created by yany on 2017/11/14.
+ * 头向→的尺子
  */
-
 public class RightHeadRuler extends VerticalRuler {
 
     public RightHeadRuler(Context context, BooheeRuler booheeRuler) {
@@ -32,6 +31,8 @@ public class RightHeadRuler extends VerticalRuler {
                 } else {
                     canvas.drawLine(width - mParent.getSmallScaleLength(), locationY, width, locationY, mSmallScalePaint);
                 }
+                //画轮廓线
+                canvas.drawLine(canvas.getWidth(), getScrollY(), canvas.getWidth(), getScrollY() + canvas.getHeight(), mOutLinePaint);
             }
         }
     }

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 
 /**
- * Created by yany on 2017/11/14.
+ * 头向左的尺子
  */
 
 public class LeftHeadRuler extends VerticalRuler{
@@ -32,6 +32,8 @@ public class LeftHeadRuler extends VerticalRuler{
                 } else {
                     canvas.drawLine(0, locationY, mParent.getSmallScaleLength(), locationY, mSmallScalePaint);
                 }
+                //画轮廓线
+                canvas.drawLine(0, getScrollY() , 0, getScrollY() + canvas.getHeight(), mOutLinePaint);
             }
         }
     }

@@ -7,45 +7,21 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 
 /**
- * 实现尺子的绘画，滑动处理，计算刻度
+ * 水平尺子抽象类
  */
 
 public class HorizontalRuler extends InnerRuler {
     private final String TAG = "ruler";
-//    private Context mContext;
-//    //画笔
-//    private Paint mSmallScalePaint, mBigScalePaint, mTextPaint;
-//    //当前刻度值
-//    private float mCurrentScale = 0;
-//    //最大刻度数
-//    private int mMaxLength = 0;
-//    //长度、最小可滑动值、最大可滑动值
-//    private int mLength, mMinPosition = 0, mMaxPosition = 0;
-//    //控制滑动
-//    private OverScroller mOverScroller;
-    //记录落点
     private float mLastX = 0;
     //拖动阈值,这里没有使用它，用了感觉体验不好
     private int mTouchSlop;
-    //惯性最大最小速度
-//    private int mMaximumVelocity, mMinimumVelocity;
-//    //速度获取
-//    private VelocityTracker mVelocityTracker;
     //一半宽度
     protected int mHalfWidth = 0;
-
-//    //一格大刻度多少格小刻度
-//    private int mCount = 10;
-//    //提前刻画量
-//    private int mDrawOffset = 0;
-
-//    private BooheeRuler mParent;
 
 
     public HorizontalRuler(Context context, BooheeRuler booheeRuler) {
         super(context,booheeRuler);
     }
-
 
 
     //处理滑动，主要是触摸的时候通过计算现在的event坐标和上一个的位移量来决定scrollBy()的多少

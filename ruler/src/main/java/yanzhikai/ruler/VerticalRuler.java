@@ -7,14 +7,14 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 
 /**
- * Created by yany on 2017/11/14.
+ * 垂直尺子抽象类
  */
 
 public class VerticalRuler extends InnerRuler {
     private final String TAG = "ruler";
     //记录落点
     private float mLastY = 0;
-    //一半宽度
+    //一半高度
     protected int mHalfHeight = 0;
 
     public VerticalRuler(Context context, BooheeRuler booheeRuler) {
@@ -107,7 +107,7 @@ public class VerticalRuler extends InnerRuler {
     //直接跳转到当前刻度
     public void goToScale(float scale){
         mCurrentScale = Math.round(scale);
-        scrollTo(scaleToScrollY(mCurrentScale),0);
+        scrollTo(0,scaleToScrollY(mCurrentScale));
         if (mRulerCallback != null){
             mRulerCallback.onScaleChanging(mCurrentScale);
         }

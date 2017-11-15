@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 
 /**
- * Created by yany on 2017/11/14.
+ * 头向上的尺子
  */
 
 public class TopHeadRuler extends HorizontalRuler {
@@ -21,7 +21,7 @@ public class TopHeadRuler extends HorizontalRuler {
 
     //画刻度和字
     private void drawScale(Canvas canvas) {
-        for (float i = mParent.getMinScale(); i <= mParent.getMaxScale(); i++){
+        for (float i = mParent.getMinScale(); i <= mParent.getMaxScale(); i++) {
             float locationX = (i - mParent.getMinScale()) * mParent.getInterval();
 
             if (locationX > getScrollX() - mDrawOffset && locationX < (getScrollX() + canvas.getWidth() + mDrawOffset)) {
@@ -31,6 +31,8 @@ public class TopHeadRuler extends HorizontalRuler {
                 } else {
                     canvas.drawLine(locationX, 0, locationX, mParent.getSmallScaleLength(), mSmallScalePaint);
                 }
+                //画轮廓线
+                canvas.drawLine(getScrollX(), 0, getScrollX() + canvas.getWidth(), 0, mOutLinePaint);
             }
         }
     }

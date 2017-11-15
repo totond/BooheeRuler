@@ -24,6 +24,7 @@
             <enum name="LEFT_HEAD" value="3"/>
             <enum name="RIGHT_HEAD" value="4"/>
         </attr>
+        <attr name="rulerBackGround" format="reference|color" />
     </declare-styleable>
 
     <declare-styleable name="KgNumberLayout">

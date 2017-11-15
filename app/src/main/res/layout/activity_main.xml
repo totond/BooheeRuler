@@ -6,119 +6,134 @@
     android:layout_height="match_parent"
     tools:context="yanzhikai.booheeruler.MainActivity">
 
-    <!--数字和单位-->
-    <yanzhikai.ruler.KgNumberLayout
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/br_top_head"
-        app:scaleTextSize="50sp"
-        app:kgTextSize="20sp"
-        android:layout_marginBottom="20dp"
-        android:id="@+id/knl"/>
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+        <!--数字和单位-->
+        <yanzhikai.ruler.KgNumberLayout
+            android:id="@+id/knl_bottom_head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:kgTextSize="20sp"
+            app:scaleTextSize="50sp" />
+        <yanzhikai.ruler.KgNumberLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:scaleTextSize="50sp"
+            app:kgTextSize="20sp"
+            android:id="@+id/knl_right_head"/>
+        <yanzhikai.ruler.KgNumberLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:scaleTextSize="50sp"
+            app:kgTextSize="20sp"
+            android:id="@+id/knl_left_head"/>
+        <yanzhikai.ruler.KgNumberLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:scaleTextSize="50sp"
+            app:kgTextSize="20sp"
+            android:id="@+id/knl_top_head"/>
+    </LinearLayout>
+
 
     <!--尺子-->
     <yanzhikai.ruler.BooheeRuler
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
         android:id="@+id/br_top_head"
-        android:background="@color/colorDirtyWithe"
-        app:rulerStyle="TOP_HEAD"
-        app:minScale="464"
-        app:maxScale="2000"
-        app:numberTextSize="22sp"
-        app:textMarginHead="80dp"
-        app:cursorWidth="4dp"
-        app:cursorHeight="45dp"
-        app:smallScaleLength="20dp"
-        app:smallScaleWidth="1.5dp"
-        app:bigScaleLength="40dp"
-        app:bigScaleWidth="2.5dp"
-        app:scaleInterval="11.5dp"
-        app:currentScale="666"
-        app:count="10"
-        app:cursorDrawable="@drawable/cursor_shape"
-        android:layout_alignParentBottom="true"
-        app:paddingStartAndEnd="5dp"
-        />
-
-    <!--尺子-->
-    <yanzhikai.ruler.BooheeRuler
-        android:layout_width="100dp"
-        android:layout_height="match_parent"
-        android:id="@+id/br_right_head"
-        app:rulerStyle="RIGHT_HEAD"
-        android:background="@color/colorDirtyWithe"
-        app:minScale="464"
-        app:maxScale="2000"
-        app:numberTextSize="22sp"
-        app:textMarginHead="80dp"
-        app:cursorWidth="45dp"
-        app:cursorHeight="4dp"
-        app:smallScaleLength="20dp"
-        app:smallScaleWidth="1.5dp"
-        app:bigScaleLength="40dp"
-        app:bigScaleWidth="2.5dp"
-        app:scaleInterval="11.5dp"
-        app:currentScale="666"
-        app:count="10"
-        app:cursorDrawable="@drawable/cursor_shape"
-        android:layout_above="@+id/br_top_head"
-        android:layout_below="@+id/br_bottom_head"
-        android:layout_alignParentLeft="true"
-        app:paddingStartAndEnd="5dp"
-        />
-
-    <!--尺子-->
-    <yanzhikai.ruler.BooheeRuler
-        android:layout_width="100dp"
-        android:layout_height="match_parent"
-        android:id="@+id/br_left_head"
-        app:rulerStyle="LEFT_HEAD"
-        android:background="@color/colorDirtyWithe"
-        app:minScale="464"
-        app:maxScale="2000"
-        app:numberTextSize="22sp"
-        app:textMarginHead="80dp"
-        app:cursorWidth="45dp"
-        app:cursorHeight="4dp"
-        app:smallScaleLength="20dp"
-        app:smallScaleWidth="1.5dp"
-        app:bigScaleLength="40dp"
-        app:bigScaleWidth="2.5dp"
-        app:scaleInterval="11.5dp"
-        app:currentScale="666"
-        app:count="10"
-        app:cursorDrawable="@drawable/cursor_shape"
-        android:layout_above="@+id/br_top_head"
-        android:layout_below="@+id/br_bottom_head"
-        android:layout_alignParentRight="true"
-        app:paddingStartAndEnd="5dp"
-        />
-
-    <!--尺子-->
-    <yanzhikai.ruler.BooheeRuler
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:id="@+id/br_bottom_head"
-        android:background="@color/colorDirtyWithe"
-        app:rulerStyle="BOTTOM_HEAD"
-        app:minScale="464"
-        app:maxScale="2000"
-        app:numberTextSize="22sp"
-        app:textMarginHead="80dp"
-        app:cursorWidth="4dp"
-        app:cursorHeight="45dp"
-        app:smallScaleLength="20dp"
-        app:smallScaleWidth="1.5dp"
+        android:layout_alignParentBottom="true"
         app:bigScaleLength="40dp"
         app:bigScaleWidth="2.5dp"
-        app:scaleInterval="11.5dp"
-        app:currentScale="666"
         app:count="10"
+        app:currentScale="666"
         app:cursorDrawable="@drawable/cursor_shape"
+        app:cursorHeight="45dp"
+        app:cursorWidth="4dp"
+        app:maxScale="2000"
+        app:minScale="464"
+        app:numberTextSize="22sp"
+        app:paddingStartAndEnd="10dp"
+        app:rulerStyle="TOP_HEAD"
+        app:scaleInterval="11.5dp"
+        app:smallScaleLength="20dp"
+        app:smallScaleWidth="1.5dp"
+        app:textMarginHead="80dp" />
+
+    <!--尺子-->
+    <yanzhikai.ruler.BooheeRuler
+        android:id="@+id/br_right_head"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/br_top_head"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/br_bottom_head"
+        app:bigScaleLength="40dp"
+        app:bigScaleWidth="2.5dp"
+        app:count="10"
+        app:currentScale="666"
+        app:cursorDrawable="@drawable/cursor_shape"
+        app:cursorHeight="4dp"
+        app:cursorWidth="45dp"
+        app:maxScale="2000"
+        app:minScale="464"
+        app:numberTextSize="22sp"
+        app:paddingStartAndEnd="10dp"
+        app:rulerStyle="RIGHT_HEAD"
+        app:scaleInterval="11.5dp"
+        app:smallScaleLength="20dp"
+        app:smallScaleWidth="1.5dp"
+        app:textMarginHead="80dp" />
+
+    <!--尺子-->
+    <yanzhikai.ruler.BooheeRuler
+        android:id="@+id/br_left_head"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/br_top_head"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/br_bottom_head"
+        app:bigScaleLength="40dp"
+        app:bigScaleWidth="2.5dp"
+        app:count="10"
+        app:currentScale="666"
+        app:cursorDrawable="@drawable/cursor_shape"
+        app:cursorHeight="4dp"
+        app:cursorWidth="45dp"
+        app:maxScale="2000"
+        app:minScale="464"
+        app:numberTextSize="22sp"
+        app:paddingStartAndEnd="10dp"
+        app:rulerStyle="LEFT_HEAD"
+        app:scaleInterval="11.5dp"
+        app:smallScaleLength="20dp"
+        app:smallScaleWidth="1.5dp"
+        app:textMarginHead="80dp" />
+
+    <!--尺子-->
+    <yanzhikai.ruler.BooheeRuler
+        android:id="@+id/br_bottom_head"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
         android:layout_alignParentTop="true"
-        app:paddingStartAndEnd="5dp"
-        />
+        app:bigScaleLength="40dp"
+        app:bigScaleWidth="2.5dp"
+        app:count="10"
+        app:currentScale="666"
+        app:cursorDrawable="@drawable/cursor_shape"
+        app:cursorHeight="45dp"
+        app:cursorWidth="4dp"
+        app:maxScale="2000"
+        app:minScale="464"
+        app:numberTextSize="22sp"
+        app:paddingStartAndEnd="10dp"
+        app:rulerStyle="BOTTOM_HEAD"
+        app:scaleInterval="11.5dp"
+        app:smallScaleLength="20dp"
+        app:smallScaleWidth="1.5dp"
+        app:textMarginHead="80dp" />
 
 
 </RelativeLayout>

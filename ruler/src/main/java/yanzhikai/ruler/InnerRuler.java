@@ -3,8 +3,6 @@ package yanzhikai.ruler;
 import android.content.Context;
 import android.graphics.Paint;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.util.AttributeSet;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -12,14 +10,14 @@ import android.view.ViewTreeObserver;
 import android.widget.OverScroller;
 
 /**
- * Created by yany on 2017/11/14.
+ * 内部尺子抽象类
  */
 
 public abstract class InnerRuler extends View {
     protected Context mContext;
     protected BooheeRuler mParent;
 
-    protected Paint mSmallScalePaint, mBigScalePaint, mTextPaint;
+    protected Paint mSmallScalePaint, mBigScalePaint, mTextPaint, mOutLinePaint;
     //当前刻度值
     protected float mCurrentScale = 0;
     //最大刻度数
@@ -94,7 +92,9 @@ public abstract class InnerRuler extends View {
         mTextPaint.setTextSize(mParent.getTextSize());
         mTextPaint.setTextAlign(Paint.Align.CENTER);
 //        mTextPaint.setStrokeJoin(Paint.Join.ROUND);
-
+        mOutLinePaint = new Paint();
+        mOutLinePaint.setStrokeWidth(0);
+        mOutLinePaint.setColor(mParent.getScaleColor());
     }
 
 
