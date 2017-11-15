@@ -1,4 +1,4 @@
-package yanzhikai.ruler;
+package yanzhikai.ruler.InnerRulers;
 
 import android.content.Context;
 import android.support.annotation.Px;
@@ -6,26 +6,31 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 
+import yanzhikai.ruler.BooheeRuler;
+
 /**
- * 垂直尺子抽象类
+ * 水平尺子抽象类
  */
 
-public class VerticalRuler extends InnerRuler {
+public class HorizontalRuler extends InnerRuler {
     private final String TAG = "ruler";
-    //记录落点
-    private float mLastY = 0;
-    //一半高度
-    protected int mHalfHeight = 0;
+    private float mLastX = 0;
+    //拖动阈值,这里没有使用它，用了感觉体验不好
+    private int mTouchSlop;
+    //一半宽度
+    protected int mHalfWidth = 0;
 
-    public VerticalRuler(Context context, BooheeRuler booheeRuler) {
-        super(context, booheeRuler);
+
+    public HorizontalRuler(Context context, BooheeRuler booheeRuler) {
+        super(context,booheeRuler);
     }
+
 
     //处理滑动，主要是触摸的时候通过计算现在的event坐标和上一个的位移量来决定scrollBy()的多少
     //滑动完之后计算速度是否满足Fling，满足则使用OverScroller来计算Fling滑动
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        float currentY = event.getY();
+        float currentX = event.getX();
         //开始速度检测
         if (mVelocityTracker == null) {
             mVelocityTracker = VelocityTracker.obtain();
@@ -38,20 +43,20 @@ public class VerticalRuler extends InnerRuler {
                     mOverScroller.abortAnimation();
                 }
 
-                mLastY = currentY;
+                mLastX = currentX;
                 break;
             case MotionEvent.ACTION_MOVE:
-                float moveY = mLastY - currentY;
-                mLastY = currentY;
-                scrollBy(0,(int)(moveY));
+                float moveX = mLastX - currentX;
+                mLastX = currentX;
+                scrollBy((int)(moveX),0);
                 break;
             case MotionEvent.ACTION_UP:
                 //处理松手后的Fling
                 mVelocityTracker.computeCurrentVelocity(1000,mMaximumVelocity);
-                int velocityY = (int) mVelocityTracker.getYVelocity();
-                if (Math.abs(velocityY) > mMinimumVelocity)
+                int velocityX = (int) mVelocityTracker.getXVelocity();
+                if (Math.abs(velocityX) > mMinimumVelocity)
                 {
-                    fling(-velocityY);
+                    fling(-velocityX);
                 }else {
                     scrollBackToCurrentScale();
                 }
@@ -76,28 +81,28 @@ public class VerticalRuler extends InnerRuler {
         return true;
     }
 
-    private void fling(int vY){
-        mOverScroller.fling(0,getScrollY(), 0, vY, 0, 0, mMinPosition, mMaxPosition);
+    private void fling(int vX){
+        mOverScroller.fling(getScrollX(), 0, vX, 0, mMinPosition, mMaxPosition, 0, 0);
         invalidate();
     }
 
     //重写滑动方法，设置到边界的时候不滑。滑动完输出刻度
     @Override
     public void scrollTo(@Px int x, @Px int y) {
-        if (y < mMinPosition)
+        if (x < mMinPosition)
         {
-            y = mMinPosition;
+            x = mMinPosition;
         }
-        if (y > mMaxPosition)
+        if (x > mMaxPosition)
         {
-            y = mMaxPosition;
+            x = mMaxPosition;
         }
-        if (y != getScrollY())
+        if (x != getScrollX())
         {
             super.scrollTo(x, y);
         }
 
-        mCurrentScale = scrollYtoScale(y);
+        mCurrentScale = scrollXtoScale(x);
         if (mRulerCallback != null){
             mRulerCallback.onScaleChanging(Math.round(mCurrentScale));
         }
@@ -107,19 +112,19 @@ public class VerticalRuler extends InnerRuler {
     //直接跳转到当前刻度
     public void goToScale(float scale){
         mCurrentScale = Math.round(scale);
-        scrollTo(0,scaleToScrollY(mCurrentScale));
+        scrollTo(scaleToScrollX(mCurrentScale),0);
         if (mRulerCallback != null){
             mRulerCallback.onScaleChanging(mCurrentScale);
         }
     }
 
-    //把滑动偏移量scrollY转化为刻度Scale
-    private float scrollYtoScale(int scrollY){
-        return ((float) (scrollY - mMinPosition) / mLength) *  mMaxLength + mParent.getMinScale();
+    //把滑动偏移量scrollX转化为刻度Scale
+    private float scrollXtoScale(int scrollX){
+        return ((float) (scrollX - mMinPosition) / mLength) *  mMaxLength + mParent.getMinScale();
     }
 
-    //把Scale转化为ScrollY
-    private int scaleToScrollY(float scale){
+    //把Scale转化为ScrollX
+    private int scaleToScrollX(float scale){
         return (int) ((scale - mParent.getMinScale()) / mMaxLength * mLength + mMinPosition);
     }
 
@@ -127,19 +132,17 @@ public class VerticalRuler extends InnerRuler {
     private void scrollBackToCurrentScale(){
         //渐变回弹
         mCurrentScale = Math.round(mCurrentScale);
-        mOverScroller.startScroll(0, getScrollY(), 0, scaleToScrollY(mCurrentScale) - getScrollY(),1000);
+        mOverScroller.startScroll(getScrollX(),0,scaleToScrollX(mCurrentScale) - getScrollX(),0,1000);
         invalidate();
 
         //立刻回弹
-//        scrollTo(scaleToScrollY(mCurrentScale),0);
+//        scrollTo(scaleToScrollX(mCurrentScale),0);
     }
 
     @Override
     public void computeScroll() {
         if (mOverScroller.computeScrollOffset()) {
             scrollTo(mOverScroller.getCurrX(), mOverScroller.getCurrY());
-            Log.d(TAG, "getScrollY: " + getScrollY());
-            Log.d(TAG, "computeScroll: " + (mCurrentScale != Math.round(mCurrentScale)));
 
             //这是最后OverScroller的最后一次滑动，如果这次滑动完了mCurrentScale不是整数，则把尺子移动到最近的整数位置
             if (!mOverScroller.computeScrollOffset() && mCurrentScale != Math.round(mCurrentScale)){
@@ -155,10 +158,11 @@ public class VerticalRuler extends InnerRuler {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         mLength = (mParent.getMaxScale() - mParent.getMinScale()) * mParent.getInterval();
-        mHalfHeight = h / 2;
-        mMinPosition = -mHalfHeight;
-        mMaxPosition = mLength - mHalfHeight;
+        mHalfWidth = w / 2;
+        mMinPosition = -mHalfWidth;
+        mMaxPosition = mLength - mHalfWidth;
     }
+
 
 
 }

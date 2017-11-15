@@ -8,12 +8,17 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntDef;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import yanzhikai.ruler.InnerRulers.BottomHeadRuler;
+import yanzhikai.ruler.InnerRulers.InnerRuler;
+import yanzhikai.ruler.InnerRulers.LeftHeadRuler;
+import yanzhikai.ruler.InnerRulers.RightHeadRuler;
+import yanzhikai.ruler.InnerRulers.TopHeadRuler;
 
 /**
  * 用于包着尺子的外壳，用于画选取光标、外壳

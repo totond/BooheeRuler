@@ -1,4 +1,4 @@
-package yanzhikai.ruler;
+package yanzhikai.ruler.InnerRulers;
 
 import android.content.Context;
 import android.graphics.Paint;
@@ -8,6 +8,9 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewTreeObserver;
 import android.widget.OverScroller;
+
+import yanzhikai.ruler.BooheeRuler;
+import yanzhikai.ruler.RulerCallback;
 
 /**
  * 内部尺子抽象类

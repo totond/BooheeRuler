@@ -1,7 +1,9 @@
-package yanzhikai.ruler;
+package yanzhikai.ruler.InnerRulers;
 
 import android.content.Context;
 import android.graphics.Canvas;
+
+import yanzhikai.ruler.BooheeRuler;
 
 /**
  * 头向上的尺子
