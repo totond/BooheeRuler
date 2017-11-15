@@ -1,5 +1,5 @@
 # BooheeRuler
-　　这是仿写薄荷健康里面体重选择尺的控件，因为最新的0.1.0版本经历重大更新（重构，把尺子分成多种形式），所以重新写一个README来介绍（旧的README在[这里](https://github.com/totond/BooheeRuler/blob/master/README.md_0.0.7)）：
+　　这是仿写薄荷健康里面体重选择尺的控件，因为最新的0.1.0版本经历重大更新（重构，把尺子分成多种形式），所以重新写一个README来介绍（旧的README在[这里](https://github.com/totond/BooheeRuler/blob/master/README_0.0.7.md)）：
 
 ![](https://i.imgur.com/80KtaQJ.gif)
 
