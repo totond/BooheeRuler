@@ -1,5 +1,5 @@
 # BooheeRuler
-　　这是仿写薄荷健康里面体重选择尺的控件，因为最新的0.1.0版本经历重大更新（重构，把尺子分成多种形式），所以重新写一个README来介绍（旧的README在[这里](https://github.com/totond/BooheeRuler/blob/master/README_0.0.7.md)）：
+　　这是仿写薄荷健康里面体重选择尺的控件，因为最新的0.1.x版本经历重大更新（重构，把尺子分成多种形式），所以重新写一个README来介绍（旧的README在[这里](https://github.com/totond/BooheeRuler/blob/master/README_0.0.7.md)）：
 
 ![](https://i.imgur.com/80KtaQJ.gif)
 
@@ -15,7 +15,7 @@
 ### Gradle
 
 ```
-    compile 'com.yanzhikai:BooheeRuler:0.1.0'
+    compile 'com.yanzhikai:BooheeRuler:0.1.1'
 ```
 
 ### 使用方法
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
 |count | 一个大刻度格子里面的小刻度格子数| integer|10|
 |paddingStartAndEnd| 控制尺子两端的padding| dimension|0|
 |rulerBackGround（new）| 尺子的背景|reference或者color|#f6f9f6|
-|rulerStyle|尺子的形态（下面有具体介绍）|enum|TOP_HEAD|
+|rulerStyle（new）|尺子的形态（下面有具体介绍）|enum|TOP_HEAD|
 
 　　接下来是选择尺子形态的属性rulerStyle：
 
@@ -157,6 +157,8 @@ public interface RulerCallback {
  - 2017/11/15 **version 0.1.0**:
      - 重构代码，将尺子分为4个形态。
      - 对细节有一些小改动：如背景设置换成以InnerRuler为主体，优化Padding等。
+ - 2017/11/16 **version 0.1.1**:
+     - 修复KgNumberLayout修改单位会出错的bug
 
 ## 开源协议
 　　BooheeRuler遵循MIT协议。

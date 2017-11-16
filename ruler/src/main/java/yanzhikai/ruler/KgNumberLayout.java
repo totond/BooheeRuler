@@ -49,7 +49,7 @@ public class KgNumberLayout extends RelativeLayout implements RulerCallback {
         mKgTextColor = typedArray.getColor(R.styleable.KgNumberLayout_kgTextColor,mKgTextColor);
         String text = typedArray.getString(R.styleable.KgNumberLayout_kgUnitText);
         if (text != null){
-            mUnitText = null;
+            mUnitText = text;
         }
         typedArray.recycle();
 
