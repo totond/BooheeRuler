@@ -1,7 +1,7 @@
 # BooheeRuler
 　　这是仿写薄荷健康里面体重选择尺的控件，因为最新的0.1.x版本经历重大更新（重构，把尺子分成多种形式），所以重新写一个README来介绍（旧的README在[这里](https://github.com/totond/BooheeRuler/blob/master/README_0.0.7.md)）：
 
-![](https://i.imgur.com/nRSi6BR.gif)
+![](https://i.imgur.com/c7qUTRS.gif)
 
 ## 介绍
 　　由于不少伙伴们发邮件或者issue让我做纵向的尺子，其实我也很想做，但是最近项目有点忙，最后就只能在不太忙的阶段偷偷把它做出来了，欢迎大家使用，多多指教小弟哈。
