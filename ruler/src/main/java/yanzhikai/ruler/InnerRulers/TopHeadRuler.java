@@ -2,6 +2,7 @@ package yanzhikai.ruler.InnerRulers;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.util.Log;
 
 import yanzhikai.ruler.BooheeRuler;
 
@@ -19,6 +20,7 @@ public class TopHeadRuler extends HorizontalRuler {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawScale(canvas);
+        drawEdgeEffect(canvas);
     }
 
     //画刻度和字
@@ -36,6 +38,34 @@ public class TopHeadRuler extends HorizontalRuler {
                 //画轮廓线
                 canvas.drawLine(getScrollX(), 0, getScrollX() + canvas.getWidth(), 0, mOutLinePaint);
             }
+        }
+    }
+
+    private void drawEdgeEffect(Canvas canvas) {
+        if (!mStartEdgeEffect.isFinished()) {
+            int count = canvas.save();
+            canvas.rotate(270);
+            canvas.translate(-mParent.getCursorHeight(), 0);
+            mStartEdgeEffect.setSize(mParent.getCursorHeight(), getWidth());
+            if (mStartEdgeEffect.draw(canvas)) {
+                postInvalidateOnAnimation();
+            }
+            canvas.restoreToCount(count);
+        } else {
+            mStartEdgeEffect.finish();
+        }
+        if (!mEndEdgeEffect.isFinished()) {
+//            Log.d("ruler", "drawEdgeEffect: ");
+            int count = canvas.save();
+            canvas.rotate(90);
+            canvas.translate(0, -mLength);
+            mEndEdgeEffect.setSize(mParent.getCursorHeight(),getWidth());
+            if (mEndEdgeEffect.draw(canvas)) {
+                postInvalidateOnAnimation();
+            }
+            canvas.restoreToCount(count);
+        } else {
+            mEndEdgeEffect.finish();
         }
     }
 }

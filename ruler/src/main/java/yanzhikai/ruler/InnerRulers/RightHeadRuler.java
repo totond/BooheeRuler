@@ -2,6 +2,7 @@ package yanzhikai.ruler.InnerRulers;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.util.Log;
 
 import yanzhikai.ruler.BooheeRuler;
 
@@ -18,6 +19,8 @@ public class RightHeadRuler extends VerticalRuler {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawScale(canvas);
+        drawEdgeEffect(canvas);
+        canvas.drawLine(0,0,mParent.getCursorWidth(),0,mTextPaint);
     }
 
     //画刻度和字
@@ -37,6 +40,35 @@ public class RightHeadRuler extends VerticalRuler {
                 //画轮廓线
                 canvas.drawLine(canvas.getWidth(), getScrollY(), canvas.getWidth(), getScrollY() + height, mOutLinePaint);
             }
+        }
+    }
+
+    private void drawEdgeEffect(Canvas canvas) {
+        if (!mStartEdgeEffect.isFinished()) {
+            int count = canvas.save();
+//            Log.d("ruler", "drawEdgeEffect: mStartEdgeEffect");
+            canvas.translate((getWidth() - mParent.getCursorWidth()), 0);
+
+            mStartEdgeEffect.setSize(mParent.getCursorWidth(), getWidth());
+            if (mStartEdgeEffect.draw(canvas)) {
+                postInvalidateOnAnimation();
+            }
+            canvas.restoreToCount(count);
+        } else {
+            mStartEdgeEffect.finish();
+        }
+        if (!mEndEdgeEffect.isFinished()) {
+//            Log.d("ruler", "drawEdgeEffect: mStartEdgeEffect");
+            int count = canvas.save();
+            canvas.rotate(180);
+            canvas.translate(-getWidth(), -mLength);
+            mEndEdgeEffect.setSize(mParent.getCursorWidth(),getWidth());
+            if (mEndEdgeEffect.draw(canvas)) {
+                postInvalidateOnAnimation();
+            }
+            canvas.restoreToCount(count);
+        } else {
+            mEndEdgeEffect.finish();
         }
     }
 }

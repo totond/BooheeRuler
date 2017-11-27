@@ -1,12 +1,15 @@
 package yanzhikai.ruler.InnerRulers;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
+import android.util.Log;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewTreeObserver;
+import android.widget.EdgeEffect;
 import android.widget.OverScroller;
 
 import yanzhikai.ruler.BooheeRuler;
@@ -39,6 +42,12 @@ public abstract class InnerRuler extends View {
     protected int mMaximumVelocity, mMinimumVelocity;
     //回调接口
     protected RulerCallback mRulerCallback;
+    //边界效果
+    protected EdgeEffect mStartEdgeEffect,mEndEdgeEffect;
+    //是否显示边界效果
+    protected boolean mIsShownEdge = false;
+    //边缘效应长度
+    protected int mEdgeLength;
 
     public InnerRuler(Context context, BooheeRuler booheeRuler) {
         super(context);
@@ -65,6 +74,16 @@ public abstract class InnerRuler extends View {
                 .getScaledMaximumFlingVelocity();
         mMinimumVelocity = ViewConfiguration.get(context)
                 .getScaledMinimumFlingVelocity();
+
+        if (mParent.canEdgeEffect()) {
+            mStartEdgeEffect = new EdgeEffect(mContext);
+            mEndEdgeEffect = new EdgeEffect(mContext);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mStartEdgeEffect.setColor(mParent.getEdgeColor());
+                mEndEdgeEffect.setColor(mParent.getEdgeColor());
+            }
+            mEdgeLength = mParent.getCursorHeight();
+        }
 
         //第一次进入，跳转到设定刻度
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -108,7 +127,23 @@ public abstract class InnerRuler extends View {
         }
     }
 
-    public abstract void goToScale(float scale);
+    @Override
+    public void computeScroll() {
+        if (mOverScroller.computeScrollOffset()) {
+//            Log.d("ruler", "computeScroll: " + getCurrentScale());
+            scrollTo(mOverScroller.getCurrX(), mOverScroller.getCurrY());
+
+            //这是最后OverScroller的最后一次滑动，如果这次滑动完了mCurrentScale不是整数，则把尺子移动到最近的整数位置
+            if (!mOverScroller.computeScrollOffset() && mCurrentScale != Math.round(mCurrentScale)){
+                //Fling完进行一次检测回滚
+                scrollBackToCurrentScale();
+            }
+            invalidate();
+        }
+    }
+
+    protected abstract void scrollBackToCurrentScale();
+    protected abstract void goToScale(float scale);
 
     //设置尺子当前刻度
     public void setCurrentScale(float currentScale) {

@@ -22,7 +22,7 @@ public class HorizontalRuler extends InnerRuler {
 
 
     public HorizontalRuler(Context context, BooheeRuler booheeRuler) {
-        super(context,booheeRuler);
+        super(context, booheeRuler);
     }
 
 
@@ -37,7 +37,7 @@ public class HorizontalRuler extends InnerRuler {
         }
         mVelocityTracker.addMovement(event);
 
-        switch (event.getAction()){
+        switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (!mOverScroller.isFinished()) {
                     mOverScroller.abortAnimation();
@@ -48,16 +48,15 @@ public class HorizontalRuler extends InnerRuler {
             case MotionEvent.ACTION_MOVE:
                 float moveX = mLastX - currentX;
                 mLastX = currentX;
-                scrollBy((int)(moveX),0);
+                scrollBy((int) (moveX), 0);
                 break;
             case MotionEvent.ACTION_UP:
                 //处理松手后的Fling
-                mVelocityTracker.computeCurrentVelocity(1000,mMaximumVelocity);
+                mVelocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
                 int velocityX = (int) mVelocityTracker.getXVelocity();
-                if (Math.abs(velocityX) > mMinimumVelocity)
-                {
+                if (Math.abs(velocityX) > mMinimumVelocity) {
                     fling(-velocityX);
-                }else {
+                } else {
                     scrollBackToCurrentScale();
                 }
                 //VelocityTracker回收
@@ -65,93 +64,114 @@ public class HorizontalRuler extends InnerRuler {
                     mVelocityTracker.recycle();
                     mVelocityTracker = null;
                 }
+                mStartEdgeEffect.onRelease();
+                mEndEdgeEffect.onRelease();
                 break;
             case MotionEvent.ACTION_CANCEL:
-                if (!mOverScroller.isFinished())
-                {
+                if (!mOverScroller.isFinished()) {
                     mOverScroller.abortAnimation();
                 }
+                scrollBackToCurrentScale();
                 //VelocityTracker回收
                 if (mVelocityTracker != null) {
                     mVelocityTracker.recycle();
                     mVelocityTracker = null;
                 }
+                mStartEdgeEffect.onRelease();
+                mEndEdgeEffect.onRelease();
                 break;
         }
         return true;
     }
 
-    private void fling(int vX){
-        mOverScroller.fling(getScrollX(), 0, vX, 0, mMinPosition, mMaxPosition, 0, 0);
+    private void fling(int vX) {
+        mOverScroller.fling(getScrollX(), 0, vX, 0, mMinPosition - mEdgeLength, mMaxPosition + mEdgeLength, 0, 0);
         invalidate();
     }
 
     //重写滑动方法，设置到边界的时候不滑。滑动完输出刻度
     @Override
     public void scrollTo(@Px int x, @Px int y) {
-        if (x < mMinPosition)
-        {
+        if (x < mMinPosition) {
+
+            if (!mOverScroller.isFinished()){
+                mStartEdgeEffect.onAbsorb((int)mOverScroller.getCurrVelocity());
+                mOverScroller.abortAnimation();
+            }else {
+                mStartEdgeEffect.onPull((float) (mMinPosition - x) / (mEdgeLength) );
+            }
+            postInvalidateOnAnimation();
             x = mMinPosition;
         }
-        if (x > mMaxPosition)
-        {
+        if (x > mMaxPosition) {
+            if (!mOverScroller.isFinished()){
+                mEndEdgeEffect.onAbsorb((int)mOverScroller.getCurrVelocity());
+                mOverScroller.abortAnimation();
+            }else {
+                Log.d(TAG, "scrollTo: mEndEdgeEffect onPull" + (float) (x - mMaxPosition) / (mEdgeLength));
+                mEndEdgeEffect.onPull((float) (x - mMaxPosition) / (mEdgeLength));
+            }
+            postInvalidateOnAnimation();
             x = mMaxPosition;
         }
-        if (x != getScrollX())
-        {
+        if (x != getScrollX()) {
             super.scrollTo(x, y);
         }
 
         mCurrentScale = scrollXtoScale(x);
-        if (mRulerCallback != null){
+        if (mRulerCallback != null) {
             mRulerCallback.onScaleChanging(Math.round(mCurrentScale));
         }
 
     }
 
     //直接跳转到当前刻度
-    public void goToScale(float scale){
+    public void goToScale(float scale) {
         mCurrentScale = Math.round(scale);
-        scrollTo(scaleToScrollX(mCurrentScale),0);
-        if (mRulerCallback != null){
+        scrollTo(scaleToScrollX(mCurrentScale), 0);
+        if (mRulerCallback != null) {
             mRulerCallback.onScaleChanging(mCurrentScale);
         }
     }
 
     //把滑动偏移量scrollX转化为刻度Scale
-    private float scrollXtoScale(int scrollX){
-        return ((float) (scrollX - mMinPosition) / mLength) *  mMaxLength + mParent.getMinScale();
+    private float scrollXtoScale(int scrollX) {
+        return ((float) (scrollX - mMinPosition) / mLength) * mMaxLength + mParent.getMinScale();
     }
 
     //把Scale转化为ScrollX
-    private int scaleToScrollX(float scale){
+    private int scaleToScrollX(float scale) {
         return (int) ((scale - mParent.getMinScale()) / mMaxLength * mLength + mMinPosition);
     }
 
+
     //把移动后光标对准距离最近的刻度，就是回弹到最近刻度
-    private void scrollBackToCurrentScale(){
+    @Override
+    protected void scrollBackToCurrentScale() {
         //渐变回弹
         mCurrentScale = Math.round(mCurrentScale);
-        mOverScroller.startScroll(getScrollX(),0,scaleToScrollX(mCurrentScale) - getScrollX(),0,1000);
+        mOverScroller.startScroll(getScrollX(), 0, scaleToScrollX(mCurrentScale) - getScrollX(), 0, 500);
+//        mOverScroller.springBack(getScrollX(),0,scaleToScrollX(mCurrentScale),scaleToScrollX(mCurrentScale),0,0);
         invalidate();
 
         //立刻回弹
 //        scrollTo(scaleToScrollX(mCurrentScale),0);
     }
 
-    @Override
-    public void computeScroll() {
-        if (mOverScroller.computeScrollOffset()) {
-            scrollTo(mOverScroller.getCurrX(), mOverScroller.getCurrY());
-
-            //这是最后OverScroller的最后一次滑动，如果这次滑动完了mCurrentScale不是整数，则把尺子移动到最近的整数位置
-            if (!mOverScroller.computeScrollOffset() && mCurrentScale != Math.round(mCurrentScale)){
-                //Fling完进行一次检测回滚
-                scrollBackToCurrentScale();
-            }
-            invalidate();
-        }
-    }
+//    @Override
+//    public void computeScroll() {
+//        if (mOverScroller.computeScrollOffset()) {
+//            scrollTo(mOverScroller.getCurrX(), mOverScroller.getCurrY());
+//            Log.d(TAG, "computeScrollX: " + getCurrentScale());
+//
+//            //这是最后OverScroller的最后一次滑动，如果这次滑动完了mCurrentScale不是整数，则把尺子移动到最近的整数位置
+//            if (!mOverScroller.computeScrollOffset() && mCurrentScale != Math.round(mCurrentScale)){
+//                //Fling完进行一次检测回滚
+//                scrollBackToCurrentScale();
+//            }
+//            invalidate();
+//        }
+//    }
 
     //获取控件宽高，设置相应信息
     @Override
@@ -162,7 +182,6 @@ public class HorizontalRuler extends InnerRuler {
         mMinPosition = -mHalfWidth;
         mMaxPosition = mLength - mHalfWidth;
     }
-
 
 
 }

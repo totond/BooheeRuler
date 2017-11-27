@@ -68,6 +68,7 @@ public class VerticalRuler extends InnerRuler {
                 {
                     mOverScroller.abortAnimation();
                 }
+                scrollBackToCurrentScale();
                 //VelocityTracker回收
                 if (mVelocityTracker != null) {
                     mVelocityTracker.recycle();
@@ -79,7 +80,7 @@ public class VerticalRuler extends InnerRuler {
     }
 
     private void fling(int vY){
-        mOverScroller.fling(0,getScrollY(), 0, vY, 0, 0, mMinPosition, mMaxPosition);
+        mOverScroller.fling(0,getScrollY(), 0, vY, 0, 0, mMinPosition - mEdgeLength, mMaxPosition + mEdgeLength);
         invalidate();
     }
 
@@ -88,10 +89,26 @@ public class VerticalRuler extends InnerRuler {
     public void scrollTo(@Px int x, @Px int y) {
         if (y < mMinPosition)
         {
+            if (!mOverScroller.isFinished()){
+                mStartEdgeEffect.onAbsorb((int)mOverScroller.getCurrVelocity());
+                mOverScroller.abortAnimation();
+            }else {
+                Log.d(TAG, "scrollTo: mStartEdgeEffect onPull" + (float) (mMinPosition - y) / (mEdgeLength) );
+                mStartEdgeEffect.onPull((float) (mMinPosition - y) / (mEdgeLength) );
+            }
+            postInvalidateOnAnimation();
             y = mMinPosition;
         }
         if (y > mMaxPosition)
         {
+            if (!mOverScroller.isFinished()){
+                mEndEdgeEffect.onAbsorb((int)mOverScroller.getCurrVelocity());
+                mOverScroller.abortAnimation();
+            }else {
+                Log.d(TAG, "scrollTo: mEndEdgeEffect onPull" + (float) (y - mMaxPosition) / (mEdgeLength));
+                mEndEdgeEffect.onPull((float) (y - mMaxPosition) / (mEdgeLength));
+            }
+            postInvalidateOnAnimation();
             y = mMaxPosition;
         }
         if (y != getScrollY())
@@ -126,29 +143,19 @@ public class VerticalRuler extends InnerRuler {
     }
 
     //把移动后光标对准距离最近的刻度，就是回弹到最近刻度
-    private void scrollBackToCurrentScale(){
+    @Override
+    protected void scrollBackToCurrentScale(){
+        Log.d(TAG, "scrollBackToCurrentScale: " + scaleToScrollY(Math.round(mCurrentScale)));
         //渐变回弹
-        mCurrentScale = Math.round(mCurrentScale);
-        mOverScroller.startScroll(0, getScrollY(), 0, scaleToScrollY(mCurrentScale) - getScrollY(),1000);
+//        mCurrentScale = Math.round(mCurrentScale);
+        mOverScroller.startScroll(0, getScrollY(), 0, scaleToScrollY(Math.round(mCurrentScale)) - getScrollY(),1000);
         invalidate();
 
         //立刻回弹
 //        scrollTo(scaleToScrollY(mCurrentScale),0);
     }
 
-    @Override
-    public void computeScroll() {
-        if (mOverScroller.computeScrollOffset()) {
-            scrollTo(mOverScroller.getCurrX(), mOverScroller.getCurrY());
 
-            //这是最后OverScroller的最后一次滑动，如果这次滑动完了mCurrentScale不是整数，则把尺子移动到最近的整数位置
-            if (!mOverScroller.computeScrollOffset() && mCurrentScale != Math.round(mCurrentScale)){
-                //Fling完进行一次检测回滚
-                scrollBackToCurrentScale();
-            }
-            invalidate();
-        }
-    }
 
     //获取控件宽高，设置相应信息
     @Override

@@ -71,6 +71,11 @@ public class BooheeRuler extends ViewGroup {
     //尺子背景
     private Drawable mRulerBackGround;
     private int mRulerBackGroundColor = getResources().getColor(R.color.colorDirtyWithe);
+    //是否启用边缘效应
+    private boolean mCanEdgeEffect = true;
+    //边缘颜色
+    private @ColorInt int mEdgeColor  = getResources().getColor(R.color.colorForgiven);
+
 
     public BooheeRuler(Context context) {
         super(context);
@@ -261,6 +266,15 @@ public class BooheeRuler extends ViewGroup {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         initDrawable();
+    }
+
+
+    public int getEdgeColor() {
+        return mEdgeColor;
+    }
+
+    public boolean canEdgeEffect(){
+        return mCanEdgeEffect;
     }
 
     public float getCurrentScale() {
