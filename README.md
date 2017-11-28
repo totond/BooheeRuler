@@ -100,8 +100,8 @@ public class MainActivity extends AppCompatActivity {
 |cursorDrawable | 尺子中间选定光标的Drawable(会把drawable伸缩到设定的宽高上) | dimension| @drawable/cursor_shape|
 |count | 一个大刻度格子里面的小刻度格子数| integer|10|
 |paddingStartAndEnd| 控制尺子两端的padding| dimension|0|
-|canEdgeEffect** (new)**| 是否启用边缘效果|boolean|true|
-|edgeColor** (new)**| 边缘效果的颜色（API大于等于21设置才有效）|color|#4bbb74|
+|canEdgeEffect (new)| 是否启用边缘效果|boolean|true|
+|edgeColor (new)| 边缘效果的颜色（API大于等于21设置才有效）|color|#4bbb74|
 |rulerBackGround| 尺子的背景|reference或者color|#f6f9f6|
 |rulerStyle|尺子的形态（下面有具体介绍）|enum|TOP_HEAD|
 
