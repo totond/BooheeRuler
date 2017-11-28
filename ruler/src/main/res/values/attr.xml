@@ -25,6 +25,8 @@
             <enum name="RIGHT_HEAD" value="4"/>
         </attr>
         <attr name="rulerBackGround" format="reference|color" />
+        <attr name="canEdgeEffect" format="boolean"/>
+        <attr name="edgeColor" format="color"/>
     </declare-styleable>
 
     <declare-styleable name="KgNumberLayout">

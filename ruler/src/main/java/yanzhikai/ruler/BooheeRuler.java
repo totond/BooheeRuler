@@ -125,6 +125,8 @@ public class BooheeRuler extends ViewGroup {
         if (mRulerBackGround == null){
             mRulerBackGroundColor = typedArray.getColor(R.styleable.BooheeRuler_rulerBackGround,mRulerBackGroundColor);
         }
+        mCanEdgeEffect = typedArray.getBoolean(R.styleable.BooheeRuler_canEdgeEffect,mCanEdgeEffect);
+        mEdgeColor = typedArray.getColor(R.styleable.BooheeRuler_edgeColor,mEdgeColor);
         typedArray.recycle();
     }
 
@@ -271,6 +273,11 @@ public class BooheeRuler extends ViewGroup {
 
     public int getEdgeColor() {
         return mEdgeColor;
+    }
+
+    public void setCanEdgeEffect(boolean canEdgeEffect) {
+        this.mCanEdgeEffect = canEdgeEffect;
+        mInnerRuler.initEdgeEffects();
     }
 
     public boolean canEdgeEffect(){

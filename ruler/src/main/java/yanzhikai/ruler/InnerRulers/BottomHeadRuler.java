@@ -41,30 +41,29 @@ public class BottomHeadRuler extends HorizontalRuler {
         }
     }
     private void drawEdgeEffect(Canvas canvas) {
-        if (!mStartEdgeEffect.isFinished()) {
-            int count = canvas.save();
-            canvas.rotate(270);
-            canvas.translate(-getHeight(), 0);
-            mStartEdgeEffect.setSize(mParent.getCursorHeight(), getWidth());
-            if (mStartEdgeEffect.draw(canvas)) {
-                postInvalidateOnAnimation();
+        if (mParent.canEdgeEffect()) {
+            if (!mStartEdgeEffect.isFinished()) {
+                int count = canvas.save();
+                canvas.rotate(270);
+                canvas.translate(-getHeight(), 0);
+                if (mStartEdgeEffect.draw(canvas)) {
+                    postInvalidateOnAnimation();
+                }
+                canvas.restoreToCount(count);
+            } else {
+                mStartEdgeEffect.finish();
             }
-            canvas.restoreToCount(count);
-        } else {
-            mStartEdgeEffect.finish();
-        }
-        if (!mEndEdgeEffect.isFinished()) {
-//            Log.d("ruler", "drawEdgeEffect: ");
-            int count = canvas.save();
-            canvas.rotate(90);
-            canvas.translate((getHeight() - mParent.getCursorHeight()), -mLength);
-            mEndEdgeEffect.setSize(mParent.getCursorHeight(),getWidth());
-            if (mEndEdgeEffect.draw(canvas)) {
-                postInvalidateOnAnimation();
+            if (!mEndEdgeEffect.isFinished()) {
+                int count = canvas.save();
+                canvas.rotate(90);
+                canvas.translate((getHeight() - mParent.getCursorHeight()), -mLength);
+                if (mEndEdgeEffect.draw(canvas)) {
+                    postInvalidateOnAnimation();
+                }
+                canvas.restoreToCount(count);
+            } else {
+                mEndEdgeEffect.finish();
             }
-            canvas.restoreToCount(count);
-        } else {
-            mEndEdgeEffect.finish();
         }
     }
 }

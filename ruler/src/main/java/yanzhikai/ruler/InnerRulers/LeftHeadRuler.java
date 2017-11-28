@@ -19,6 +19,7 @@ public class LeftHeadRuler extends VerticalRuler{
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawScale(canvas);
+        drawEdgeEffect(canvas);
     }
 
     //画刻度和字
@@ -36,6 +37,31 @@ public class LeftHeadRuler extends VerticalRuler{
                 }
                 //画轮廓线
                 canvas.drawLine(0, getScrollY() , 0, getScrollY() + height, mOutLinePaint);
+            }
+        }
+    }
+
+    private void drawEdgeEffect(Canvas canvas) {
+        if (mParent.canEdgeEffect()) {
+            if (!mStartEdgeEffect.isFinished()) {
+                int count = canvas.save();
+                if (mStartEdgeEffect.draw(canvas)) {
+                    postInvalidateOnAnimation();
+                }
+                canvas.restoreToCount(count);
+            } else {
+                mStartEdgeEffect.finish();
+            }
+            if (!mEndEdgeEffect.isFinished()) {
+                int count = canvas.save();
+                canvas.rotate(180);
+                canvas.translate(-mParent.getCursorWidth(), -mLength);
+                if (mEndEdgeEffect.draw(canvas)) {
+                    postInvalidateOnAnimation();
+                }
+                canvas.restoreToCount(count);
+            } else {
+                mEndEdgeEffect.finish();
             }
         }
     }

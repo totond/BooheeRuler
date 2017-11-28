@@ -2,7 +2,6 @@ package yanzhikai.ruler.InnerRulers;
 
 import android.content.Context;
 import android.support.annotation.Px;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 
@@ -64,8 +63,7 @@ public class HorizontalRuler extends InnerRuler {
                     mVelocityTracker.recycle();
                     mVelocityTracker = null;
                 }
-                mStartEdgeEffect.onRelease();
-                mEndEdgeEffect.onRelease();
+                releaseEdgeEffects();
                 break;
             case MotionEvent.ACTION_CANCEL:
                 if (!mOverScroller.isFinished()) {
@@ -77,8 +75,7 @@ public class HorizontalRuler extends InnerRuler {
                     mVelocityTracker.recycle();
                     mVelocityTracker = null;
                 }
-                mStartEdgeEffect.onRelease();
-                mEndEdgeEffect.onRelease();
+                releaseEdgeEffects();
                 break;
         }
         return true;
@@ -93,25 +90,11 @@ public class HorizontalRuler extends InnerRuler {
     @Override
     public void scrollTo(@Px int x, @Px int y) {
         if (x < mMinPosition) {
-
-            if (!mOverScroller.isFinished()){
-                mStartEdgeEffect.onAbsorb((int)mOverScroller.getCurrVelocity());
-                mOverScroller.abortAnimation();
-            }else {
-                mStartEdgeEffect.onPull((float) (mMinPosition - x) / (mEdgeLength) );
-            }
-            postInvalidateOnAnimation();
+            goStartEdgeEffect(x);
             x = mMinPosition;
         }
         if (x > mMaxPosition) {
-            if (!mOverScroller.isFinished()){
-                mEndEdgeEffect.onAbsorb((int)mOverScroller.getCurrVelocity());
-                mOverScroller.abortAnimation();
-            }else {
-                Log.d(TAG, "scrollTo: mEndEdgeEffect onPull" + (float) (x - mMaxPosition) / (mEdgeLength));
-                mEndEdgeEffect.onPull((float) (x - mMaxPosition) / (mEdgeLength));
-            }
-            postInvalidateOnAnimation();
+            goEndEdgeEffect(x);
             x = mMaxPosition;
         }
         if (x != getScrollX()) {
@@ -123,6 +106,42 @@ public class HorizontalRuler extends InnerRuler {
             mRulerCallback.onScaleChanging(Math.round(mCurrentScale));
         }
 
+    }
+
+    //头部边缘效果处理
+    private void goStartEdgeEffect(int x){
+        if (mParent.canEdgeEffect()) {
+            if (!mOverScroller.isFinished()) {
+                mStartEdgeEffect.onAbsorb((int) mOverScroller.getCurrVelocity());
+                mOverScroller.abortAnimation();
+            } else {
+                mStartEdgeEffect.onPull((float) (mMinPosition - x) / (mEdgeLength) * 3 + 0.3f);
+                mStartEdgeEffect.setSize(mParent.getCursorHeight(), getWidth());
+            }
+            postInvalidateOnAnimation();
+        }
+    }
+
+    //尾部边缘效果处理
+    private void goEndEdgeEffect(int x){
+        if(mParent.canEdgeEffect()) {
+            if (!mOverScroller.isFinished()) {
+                mEndEdgeEffect.onAbsorb((int) mOverScroller.getCurrVelocity());
+                mOverScroller.abortAnimation();
+            } else {
+                mEndEdgeEffect.onPull((float) (x - mMaxPosition) / (mEdgeLength) * 3 + 0.3f);
+                mEndEdgeEffect.setSize(mParent.getCursorHeight(), getWidth());
+            }
+            postInvalidateOnAnimation();
+        }
+    }
+
+    //取消边缘效果动画
+    private void releaseEdgeEffects(){
+        if (mParent.canEdgeEffect()) {
+            mStartEdgeEffect.onRelease();
+            mEndEdgeEffect.onRelease();
+        }
     }
 
     //直接跳转到当前刻度
@@ -149,8 +168,8 @@ public class HorizontalRuler extends InnerRuler {
     @Override
     protected void scrollBackToCurrentScale() {
         //渐变回弹
-        mCurrentScale = Math.round(mCurrentScale);
-        mOverScroller.startScroll(getScrollX(), 0, scaleToScrollX(mCurrentScale) - getScrollX(), 0, 500);
+//        mCurrentScale = Math.round(mCurrentScale);
+        mOverScroller.startScroll(getScrollX(), 0, scaleToScrollX(Math.round(mCurrentScale)) - getScrollX(), 0, 500);
 //        mOverScroller.springBack(getScrollX(),0,scaleToScrollX(mCurrentScale),scaleToScrollX(mCurrentScale),0,0);
         invalidate();
 

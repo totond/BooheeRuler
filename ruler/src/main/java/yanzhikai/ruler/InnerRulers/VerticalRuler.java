@@ -34,7 +34,7 @@ public class VerticalRuler extends InnerRuler {
         }
         mVelocityTracker.addMovement(event);
 
-        switch (event.getAction()){
+        switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (!mOverScroller.isFinished()) {
                     mOverScroller.abortAnimation();
@@ -45,16 +45,15 @@ public class VerticalRuler extends InnerRuler {
             case MotionEvent.ACTION_MOVE:
                 float moveY = mLastY - currentY;
                 mLastY = currentY;
-                scrollBy(0,(int)(moveY));
+                scrollBy(0, (int) (moveY));
                 break;
             case MotionEvent.ACTION_UP:
                 //处理松手后的Fling
-                mVelocityTracker.computeCurrentVelocity(1000,mMaximumVelocity);
+                mVelocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
                 int velocityY = (int) mVelocityTracker.getYVelocity();
-                if (Math.abs(velocityY) > mMinimumVelocity)
-                {
+                if (Math.abs(velocityY) > mMinimumVelocity) {
                     fling(-velocityY);
-                }else {
+                } else {
                     scrollBackToCurrentScale();
                 }
                 //VelocityTracker回收
@@ -62,10 +61,10 @@ public class VerticalRuler extends InnerRuler {
                     mVelocityTracker.recycle();
                     mVelocityTracker = null;
                 }
+                releaseEdgeEffects();
                 break;
             case MotionEvent.ACTION_CANCEL:
-                if (!mOverScroller.isFinished())
-                {
+                if (!mOverScroller.isFinished()) {
                     mOverScroller.abortAnimation();
                 }
                 scrollBackToCurrentScale();
@@ -74,87 +73,105 @@ public class VerticalRuler extends InnerRuler {
                     mVelocityTracker.recycle();
                     mVelocityTracker = null;
                 }
+                releaseEdgeEffects();
                 break;
         }
         return true;
     }
 
-    private void fling(int vY){
-        mOverScroller.fling(0,getScrollY(), 0, vY, 0, 0, mMinPosition - mEdgeLength, mMaxPosition + mEdgeLength);
+    private void fling(int vY) {
+        mOverScroller.fling(0, getScrollY(), 0, vY, 0, 0, mMinPosition - mEdgeLength, mMaxPosition + mEdgeLength);
         invalidate();
     }
 
     //重写滑动方法，设置到边界的时候不滑。滑动完输出刻度
     @Override
     public void scrollTo(@Px int x, @Px int y) {
-        if (y < mMinPosition)
-        {
-            if (!mOverScroller.isFinished()){
-                mStartEdgeEffect.onAbsorb((int)mOverScroller.getCurrVelocity());
-                mOverScroller.abortAnimation();
-            }else {
-                Log.d(TAG, "scrollTo: mStartEdgeEffect onPull" + (float) (mMinPosition - y) / (mEdgeLength) );
-                mStartEdgeEffect.onPull((float) (mMinPosition - y) / (mEdgeLength) );
-            }
-            postInvalidateOnAnimation();
+        if (y < mMinPosition) {
+            goStartEdgeEffect(y);
             y = mMinPosition;
         }
-        if (y > mMaxPosition)
-        {
-            if (!mOverScroller.isFinished()){
-                mEndEdgeEffect.onAbsorb((int)mOverScroller.getCurrVelocity());
-                mOverScroller.abortAnimation();
-            }else {
-                Log.d(TAG, "scrollTo: mEndEdgeEffect onPull" + (float) (y - mMaxPosition) / (mEdgeLength));
-                mEndEdgeEffect.onPull((float) (y - mMaxPosition) / (mEdgeLength));
-            }
-            postInvalidateOnAnimation();
+        if (y > mMaxPosition) {
+            goEndEdgeEffect(y);
             y = mMaxPosition;
         }
-        if (y != getScrollY())
-        {
+        if (y != getScrollY()) {
             super.scrollTo(x, y);
         }
 
         mCurrentScale = scrollYtoScale(y);
-        if (mRulerCallback != null){
+        if (mRulerCallback != null) {
             mRulerCallback.onScaleChanging(Math.round(mCurrentScale));
         }
 
     }
 
+    //头部边缘效果处理
+    private void goStartEdgeEffect(int y) {
+        if (mParent.canEdgeEffect()) {
+            if (!mOverScroller.isFinished()) {
+                mStartEdgeEffect.onAbsorb((int) mOverScroller.getCurrVelocity());
+                mOverScroller.abortAnimation();
+            } else {
+                mStartEdgeEffect.onPull((float) (mMinPosition - y) / (mEdgeLength) * 3 + 0.3f);
+                mStartEdgeEffect.setSize(mParent.getCursorWidth(), getHeight());
+            }
+            postInvalidateOnAnimation();
+        }
+    }
+
+    //尾部边缘效果处理
+    private void goEndEdgeEffect(int y) {
+        if (mParent.canEdgeEffect()) {
+            if (!mOverScroller.isFinished()) {
+                mEndEdgeEffect.onAbsorb((int) mOverScroller.getCurrVelocity());
+                mOverScroller.abortAnimation();
+            } else {
+                mEndEdgeEffect.onPull((float) (y - mMaxPosition) / (mEdgeLength) * 3 + 0.3f);
+                mEndEdgeEffect.setSize(mParent.getCursorWidth(), getHeight());
+            }
+            postInvalidateOnAnimation();
+        }
+    }
+
+    //取消边缘效果动画
+    private void releaseEdgeEffects() {
+        if (mParent.canEdgeEffect()) {
+            mStartEdgeEffect.onRelease();
+            mEndEdgeEffect.onRelease();
+        }
+    }
+
     //直接跳转到当前刻度
-    public void goToScale(float scale){
+    public void goToScale(float scale) {
         mCurrentScale = Math.round(scale);
-        scrollTo(0,scaleToScrollY(mCurrentScale));
-        if (mRulerCallback != null){
+        scrollTo(0, scaleToScrollY(mCurrentScale));
+        if (mRulerCallback != null) {
             mRulerCallback.onScaleChanging(mCurrentScale);
         }
     }
 
     //把滑动偏移量scrollY转化为刻度Scale
-    private float scrollYtoScale(int scrollY){
-        return ((float) (scrollY - mMinPosition) / mLength) *  mMaxLength + mParent.getMinScale();
+    private float scrollYtoScale(int scrollY) {
+        return ((float) (scrollY - mMinPosition) / mLength) * mMaxLength + mParent.getMinScale();
     }
 
     //把Scale转化为ScrollY
-    private int scaleToScrollY(float scale){
+    private int scaleToScrollY(float scale) {
         return (int) ((scale - mParent.getMinScale()) / mMaxLength * mLength + mMinPosition);
     }
 
     //把移动后光标对准距离最近的刻度，就是回弹到最近刻度
     @Override
-    protected void scrollBackToCurrentScale(){
-        Log.d(TAG, "scrollBackToCurrentScale: " + scaleToScrollY(Math.round(mCurrentScale)));
+    protected void scrollBackToCurrentScale() {
         //渐变回弹
 //        mCurrentScale = Math.round(mCurrentScale);
-        mOverScroller.startScroll(0, getScrollY(), 0, scaleToScrollY(Math.round(mCurrentScale)) - getScrollY(),1000);
+        mOverScroller.startScroll(0, getScrollY(), 0, scaleToScrollY(Math.round(mCurrentScale)) - getScrollY(), 1000);
         invalidate();
 
         //立刻回弹
 //        scrollTo(scaleToScrollY(mCurrentScale),0);
     }
-
 
 
     //获取控件宽高，设置相应信息

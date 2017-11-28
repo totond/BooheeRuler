@@ -75,15 +75,7 @@ public abstract class InnerRuler extends View {
         mMinimumVelocity = ViewConfiguration.get(context)
                 .getScaledMinimumFlingVelocity();
 
-        if (mParent.canEdgeEffect()) {
-            mStartEdgeEffect = new EdgeEffect(mContext);
-            mEndEdgeEffect = new EdgeEffect(mContext);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                mStartEdgeEffect.setColor(mParent.getEdgeColor());
-                mEndEdgeEffect.setColor(mParent.getEdgeColor());
-            }
-            mEdgeLength = mParent.getCursorHeight();
-        }
+        initEdgeEffects();
 
         //第一次进入，跳转到设定刻度
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -117,6 +109,20 @@ public abstract class InnerRuler extends View {
         mOutLinePaint = new Paint();
         mOutLinePaint.setStrokeWidth(0);
         mOutLinePaint.setColor(mParent.getScaleColor());
+    }
+
+    public void initEdgeEffects(){
+        if (mParent.canEdgeEffect()) {
+            if (mStartEdgeEffect == null || mEndEdgeEffect == null) {
+                mStartEdgeEffect = new EdgeEffect(mContext);
+                mEndEdgeEffect = new EdgeEffect(mContext);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    mStartEdgeEffect.setColor(mParent.getEdgeColor());
+                    mEndEdgeEffect.setColor(mParent.getEdgeColor());
+                }
+                mEdgeLength = mParent.getCursorHeight() + mParent.getInterval() * mParent.getCount();
+            }
+        }
     }
 
 

@@ -15,7 +15,7 @@
 ### Gradle
 
 ```
-    compile 'com.yanzhikai:BooheeRuler:0.1.1'
+    compile 'com.yanzhikai:BooheeRuler:0.1.2'
 ```
 
 ### 使用方法
@@ -75,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
+> BooheeRuler的使用环境是API >= 16
+
 ### 属性
 
 #### BooheeRuler的属性
@@ -98,8 +100,10 @@ public class MainActivity extends AppCompatActivity {
 |cursorDrawable | 尺子中间选定光标的Drawable(会把drawable伸缩到设定的宽高上) | dimension| @drawable/cursor_shape|
 |count | 一个大刻度格子里面的小刻度格子数| integer|10|
 |paddingStartAndEnd| 控制尺子两端的padding| dimension|0|
-|rulerBackGround（new）| 尺子的背景|reference或者color|#f6f9f6|
-|rulerStyle（new）|尺子的形态（下面有具体介绍）|enum|TOP_HEAD|
+|canEdgeEffect** (new)**| 是否启用边缘效果|boolean|true|
+|edgeColor** (new)**| 边缘效果的颜色（API大于等于21设置才有效）|color|#4bbb74|
+|rulerBackGround| 尺子的背景|reference或者color|#f6f9f6|
+|rulerStyle|尺子的形态（下面有具体介绍）|enum|TOP_HEAD|
 
 　　接下来是选择尺子形态的属性rulerStyle：
 
@@ -112,6 +116,11 @@ public class MainActivity extends AppCompatActivity {
 
 > 如效果图中，对应位置的尺子的rulerStyle为：上——BOTTOM_HEAD，下——TOP_HEAD，左——RIGHT_HEAD，右——LEFT_HEAD。
 
+#### 边缘效果说明
+　　0.1.2版本新增的效果，在API大于等于21（Android5.0）的时候是这样的效果：
+![](https://i.imgur.com/wc52vZ9.gif)
+　　在API小于21（Android5.0）的时候是这样的效果：
+![](https://i.imgur.com/eYB1ptb.gif)
 
 #### KgNumberLayout属性
 
@@ -159,6 +168,9 @@ public interface RulerCallback {
      - 对细节有一些小改动：如背景设置换成以InnerRuler为主体，优化Padding等。
  - 2017/11/16 **version 0.1.1**:
      - 修复KgNumberLayout修改单位会出错的bug
+ - 2017/11/28 **version 0.1.2**:
+     - 修复触发ACTION_CANCEL事件会令刻度停在非整点地方的bug
+     - 增加边缘效果
 
 ## 开源协议
 　　BooheeRuler遵循MIT协议。

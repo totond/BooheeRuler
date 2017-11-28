@@ -20,7 +20,6 @@ public class RightHeadRuler extends VerticalRuler {
         super.onDraw(canvas);
         drawScale(canvas);
         drawEdgeEffect(canvas);
-        canvas.drawLine(0,0,mParent.getCursorWidth(),0,mTextPaint);
     }
 
     //画刻度和字
@@ -44,31 +43,29 @@ public class RightHeadRuler extends VerticalRuler {
     }
 
     private void drawEdgeEffect(Canvas canvas) {
-        if (!mStartEdgeEffect.isFinished()) {
-            int count = canvas.save();
-//            Log.d("ruler", "drawEdgeEffect: mStartEdgeEffect");
-            canvas.translate((getWidth() - mParent.getCursorWidth()), 0);
+        if (mParent.canEdgeEffect()) {
+            if (!mStartEdgeEffect.isFinished()) {
+                int count = canvas.save();
+                canvas.translate((getWidth() - mParent.getCursorWidth()), 0);
 
-            mStartEdgeEffect.setSize(mParent.getCursorWidth(), getWidth());
-            if (mStartEdgeEffect.draw(canvas)) {
-                postInvalidateOnAnimation();
+                if (mStartEdgeEffect.draw(canvas)) {
+                    postInvalidateOnAnimation();
+                }
+                canvas.restoreToCount(count);
+            } else {
+                mStartEdgeEffect.finish();
             }
-            canvas.restoreToCount(count);
-        } else {
-            mStartEdgeEffect.finish();
-        }
-        if (!mEndEdgeEffect.isFinished()) {
-//            Log.d("ruler", "drawEdgeEffect: mStartEdgeEffect");
-            int count = canvas.save();
-            canvas.rotate(180);
-            canvas.translate(-getWidth(), -mLength);
-            mEndEdgeEffect.setSize(mParent.getCursorWidth(),getWidth());
-            if (mEndEdgeEffect.draw(canvas)) {
-                postInvalidateOnAnimation();
+            if (!mEndEdgeEffect.isFinished()) {
+                int count = canvas.save();
+                canvas.rotate(180);
+                canvas.translate(-getWidth(), -mLength);
+                if (mEndEdgeEffect.draw(canvas)) {
+                    postInvalidateOnAnimation();
+                }
+                canvas.restoreToCount(count);
+            } else {
+                mEndEdgeEffect.finish();
             }
-            canvas.restoreToCount(count);
-        } else {
-            mEndEdgeEffect.finish();
         }
     }
 }
