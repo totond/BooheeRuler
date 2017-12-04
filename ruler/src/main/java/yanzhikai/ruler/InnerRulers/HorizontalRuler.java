@@ -11,7 +11,7 @@ import yanzhikai.ruler.BooheeRuler;
  * 水平尺子抽象类
  */
 
-public class HorizontalRuler extends InnerRuler {
+public abstract class HorizontalRuler extends InnerRuler {
     private final String TAG = "ruler";
     private float mLastX = 0;
     //拖动阈值,这里没有使用它，用了感觉体验不好

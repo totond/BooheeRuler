@@ -44,8 +44,6 @@ public abstract class InnerRuler extends View {
     protected RulerCallback mRulerCallback;
     //边界效果
     protected EdgeEffect mStartEdgeEffect,mEndEdgeEffect;
-    //是否显示边界效果
-    protected boolean mIsShownEdge = false;
     //边缘效应长度
     protected int mEdgeLength;
 

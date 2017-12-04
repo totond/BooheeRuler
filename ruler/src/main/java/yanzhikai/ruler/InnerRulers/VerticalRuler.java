@@ -12,7 +12,7 @@ import yanzhikai.ruler.BooheeRuler;
  * 垂直尺子抽象类
  */
 
-public class VerticalRuler extends InnerRuler {
+public abstract class VerticalRuler extends InnerRuler {
     private final String TAG = "ruler";
     //记录落点
     private float mLastY = 0;
