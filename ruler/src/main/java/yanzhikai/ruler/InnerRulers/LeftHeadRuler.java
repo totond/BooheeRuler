@@ -41,6 +41,7 @@ public class LeftHeadRuler extends VerticalRuler{
         }
     }
 
+    //画边缘效果
     private void drawEdgeEffect(Canvas canvas) {
         if (mParent.canEdgeEffect()) {
             if (!mStartEdgeEffect.isFinished()) {

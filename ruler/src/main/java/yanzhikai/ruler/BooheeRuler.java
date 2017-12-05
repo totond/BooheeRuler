@@ -275,6 +275,7 @@ public class BooheeRuler extends ViewGroup {
         return mEdgeColor;
     }
 
+    //设置能否使用边缘效果
     public void setCanEdgeEffect(boolean canEdgeEffect) {
         this.mCanEdgeEffect = canEdgeEffect;
         mInnerRuler.initEdgeEffects();

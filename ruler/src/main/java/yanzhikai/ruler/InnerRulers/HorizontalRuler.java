@@ -69,6 +69,7 @@ public abstract class HorizontalRuler extends InnerRuler {
                 if (!mOverScroller.isFinished()) {
                     mOverScroller.abortAnimation();
                 }
+                //回滚到整点刻度
                 scrollBackToCurrentScale();
                 //VelocityTracker回收
                 if (mVelocityTracker != null) {
@@ -86,7 +87,7 @@ public abstract class HorizontalRuler extends InnerRuler {
         invalidate();
     }
 
-    //重写滑动方法，设置到边界的时候不滑。滑动完输出刻度
+    //重写滑动方法，设置到边界的时候不滑,并显示边缘效果。滑动完输出刻度。
     @Override
     public void scrollTo(@Px int x, @Px int y) {
         if (x < mMinPosition) {
@@ -170,7 +171,6 @@ public abstract class HorizontalRuler extends InnerRuler {
         //渐变回弹
 //        mCurrentScale = Math.round(mCurrentScale);
         mOverScroller.startScroll(getScrollX(), 0, scaleToScrollX(Math.round(mCurrentScale)) - getScrollX(), 0, 500);
-//        mOverScroller.springBack(getScrollX(),0,scaleToScrollX(mCurrentScale),scaleToScrollX(mCurrentScale),0,0);
         invalidate();
 
         //立刻回弹

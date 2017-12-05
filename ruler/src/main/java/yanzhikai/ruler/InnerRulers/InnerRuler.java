@@ -35,7 +35,7 @@ public abstract class InnerRuler extends View {
     //一格大刻度多少格小刻度
     protected int mCount = 10;
     //提前刻画量
-    protected int mDrawOffset = 0;
+    protected int mDrawOffset;
     //速度获取
     protected VelocityTracker mVelocityTracker;
     //惯性最大最小速度
@@ -109,6 +109,7 @@ public abstract class InnerRuler extends View {
         mOutLinePaint.setColor(mParent.getScaleColor());
     }
 
+    //初始化边缘效果
     public void initEdgeEffects(){
         if (mParent.canEdgeEffect()) {
             if (mStartEdgeEffect == null || mEndEdgeEffect == null) {
