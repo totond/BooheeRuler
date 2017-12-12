@@ -2,6 +2,7 @@ package yanzhikai.ruler.InnerRulers;
 
 import android.content.Context;
 import android.support.annotation.Px;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 
@@ -85,6 +86,11 @@ public abstract class HorizontalRuler extends InnerRuler {
     private void fling(int vX) {
         mOverScroller.fling(getScrollX(), 0, vX, 0, mMinPosition - mEdgeLength, mMaxPosition + mEdgeLength, 0, 0);
         invalidate();
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     //重写滑动方法，设置到边界的时候不滑,并显示边缘效果。滑动完输出刻度。

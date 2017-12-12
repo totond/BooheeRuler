@@ -171,7 +171,8 @@ public interface RulerCallback {
  - 2017/11/28 **version 0.1.2**:
      - 修复触发ACTION_CANCEL事件会令刻度停在非整点地方的bug
      - 增加边缘效果
-
+ - 2017/12/11 **version 0.1.2**:
+     - 性能优化：BooheeRuler的onLayout之前没有利用change属性，导致每次刷新都会重新Layout，现在不会。
 ## 开源协议
 　　BooheeRuler遵循MIT协议。
 
