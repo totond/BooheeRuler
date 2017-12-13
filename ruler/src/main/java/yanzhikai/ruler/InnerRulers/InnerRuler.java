@@ -135,11 +135,11 @@ public abstract class InnerRuler extends View {
     @Override
     public void computeScroll() {
         if (mOverScroller.computeScrollOffset()) {
-//            Log.d("ruler", "computeScroll: " + getCurrentScale());
             scrollTo(mOverScroller.getCurrX(), mOverScroller.getCurrY());
 
             //这是最后OverScroller的最后一次滑动，如果这次滑动完了mCurrentScale不是整数，则把尺子移动到最近的整数位置
             if (!mOverScroller.computeScrollOffset() && mCurrentScale != Math.round(mCurrentScale)){
+//                Log.d("ruler", "computeScroll: " + mCurrentScale);
                 //Fling完进行一次检测回滚
                 scrollBackToCurrentScale();
             }

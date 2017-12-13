@@ -25,20 +25,23 @@ public class LeftHeadRuler extends VerticalRuler{
     //画刻度和字
     private void drawScale(Canvas canvas) {
         int height = canvas.getHeight();
-        for (float i = mParent.getMinScale(); i <= mParent.getMaxScale(); i++){
+        float start = (getScrollY() - mDrawOffset) / mParent.getInterval() + mParent.getMinScale();
+        float end = (getScrollY() + height + mDrawOffset) / mParent.getInterval() + mParent.getMinScale();
+        for (float i = start; i <= end; i++){
             float locationY = (i - mParent.getMinScale()) * mParent.getInterval();
 
-            if (locationY > getScrollY() - mDrawOffset && locationY < (getScrollY() + height + mDrawOffset)) {
+            if (i >= mParent.getMinScale() && i <= mParent.getMaxScale()) {
                 if (i % mCount == 0) {
                     canvas.drawLine(0, locationY, mParent.getBigScaleLength(), locationY, mBigScalePaint);
                     canvas.drawText(String.valueOf(i / 10), mParent.getTextMarginHead(), locationY + mParent.getTextSize() / 2, mTextPaint);
                 } else {
                     canvas.drawLine(0, locationY, mParent.getSmallScaleLength(), locationY, mSmallScalePaint);
                 }
-                //画轮廓线
-                canvas.drawLine(0, getScrollY() , 0, getScrollY() + height, mOutLinePaint);
             }
         }
+        //画轮廓线
+        canvas.drawLine(0, getScrollY() , 0, getScrollY() + height, mOutLinePaint);
+
     }
 
     //画边缘效果

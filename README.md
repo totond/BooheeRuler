@@ -15,7 +15,7 @@
 ### Gradle
 
 ```
-    compile 'com.yanzhikai:BooheeRuler:0.1.2'
+    compile 'com.yanzhikai:BooheeRuler:0.1.3'
 ```
 
 ### 使用方法
@@ -171,8 +171,13 @@ public interface RulerCallback {
  - 2017/11/28 **version 0.1.2**:
      - 修复触发ACTION_CANCEL事件会令刻度停在非整点地方的bug
      - 增加边缘效果
- - 2017/12/11 **version 0.1.2**:
+ - 2017/12/13 **version 0.1.3**:
      - 性能优化：BooheeRuler的onLayout之前没有利用change属性，导致每次刷新都会重新Layout，现在不会。
+     - 性能优化：修改了画刻度的逻辑，现在在刻度范围很大的情况下还可以顺畅滑动。
+     - 修复了goToScale()重复回调导致显示刻度不准确的问题。
+ 
+> 非常感谢[littlezan](https://github.com/littlezan)提出的性能优化建议。
+
 ## 开源协议
 　　BooheeRuler遵循MIT协议。
 

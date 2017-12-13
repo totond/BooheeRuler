@@ -155,18 +155,21 @@ public abstract class HorizontalRuler extends InnerRuler {
     public void goToScale(float scale) {
         mCurrentScale = Math.round(scale);
         scrollTo(scaleToScrollX(mCurrentScale), 0);
-        if (mRulerCallback != null) {
-            mRulerCallback.onScaleChanging(mCurrentScale);
-        }
+//        if (mRulerCallback != null) {
+//            mRulerCallback.onScaleChanging(mCurrentScale);
+//        }
     }
 
     //把滑动偏移量scrollX转化为刻度Scale
+    //TODO 转化大刻度（1000k以上）的时候会很卡，后面有时间再尝试缓存或者分级处理
     private float scrollXtoScale(int scrollX) {
+//        Log.d(TAG, "scrollXtoScale: " + scrollX);
         return ((float) (scrollX - mMinPosition) / mLength) * mMaxLength + mParent.getMinScale();
     }
 
     //把Scale转化为ScrollX
     private int scaleToScrollX(float scale) {
+//        Log.d(TAG, "scaleToScrollX: ");
         return (int) ((scale - mParent.getMinScale()) / mMaxLength * mLength + mMinPosition);
     }
 
@@ -175,7 +178,7 @@ public abstract class HorizontalRuler extends InnerRuler {
     @Override
     protected void scrollBackToCurrentScale() {
         //渐变回弹
-//        mCurrentScale = Math.round(mCurrentScale);
+//        Log.d(TAG, "scrollBackToCurrentScale: ");
         mOverScroller.startScroll(getScrollX(), 0, scaleToScrollX(Math.round(mCurrentScale)) - getScrollX(), 0, 500);
         invalidate();
 
@@ -183,20 +186,6 @@ public abstract class HorizontalRuler extends InnerRuler {
 //        scrollTo(scaleToScrollX(mCurrentScale),0);
     }
 
-//    @Override
-//    public void computeScroll() {
-//        if (mOverScroller.computeScrollOffset()) {
-//            scrollTo(mOverScroller.getCurrX(), mOverScroller.getCurrY());
-//            Log.d(TAG, "computeScrollX: " + getCurrentScale());
-//
-//            //这是最后OverScroller的最后一次滑动，如果这次滑动完了mCurrentScale不是整数，则把尺子移动到最近的整数位置
-//            if (!mOverScroller.computeScrollOffset() && mCurrentScale != Math.round(mCurrentScale)){
-//                //Fling完进行一次检测回滚
-//                scrollBackToCurrentScale();
-//            }
-//            invalidate();
-//        }
-//    }
 
     //获取控件宽高，设置相应信息
     @Override

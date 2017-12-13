@@ -146,9 +146,9 @@ public abstract class VerticalRuler extends InnerRuler {
     public void goToScale(float scale) {
         mCurrentScale = Math.round(scale);
         scrollTo(0, scaleToScrollY(mCurrentScale));
-        if (mRulerCallback != null) {
-            mRulerCallback.onScaleChanging(mCurrentScale);
-        }
+//        if (mRulerCallback != null) {
+//            mRulerCallback.onScaleChanging(mCurrentScale);
+//        }
     }
 
     //把滑动偏移量scrollY转化为刻度Scale

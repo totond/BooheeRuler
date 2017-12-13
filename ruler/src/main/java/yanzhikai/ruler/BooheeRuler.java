@@ -38,8 +38,6 @@ public class BooheeRuler extends ViewGroup {
     private InnerRuler mInnerRuler;
     //最小最大刻度值(以0.1kg为单位)
     private int mMinScale = 464, mMaxScale = 2000;
-    //中间光标画笔
-    private Paint mCPaint, mOutLinePaint;
     //光标宽度、高度
     private int mCursorWidth = 8, mCursorHeight = 70;
     //大小刻度的长度
@@ -159,7 +157,6 @@ public class BooheeRuler extends ViewGroup {
         //设置ViewGroup可画
         setWillNotDraw(false);
 
-        initPaint();
         initDrawable();
         initRulerBackground();
     }
@@ -203,14 +200,6 @@ public class BooheeRuler extends ViewGroup {
 
     }
 
-    private void initPaint() {
-        mCPaint = new Paint();
-
-        mOutLinePaint = new Paint();
-        mOutLinePaint.setStrokeWidth(0);
-        mOutLinePaint.setColor(mScaleColor);
-
-    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

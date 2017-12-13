@@ -2,7 +2,6 @@ package yanzhikai.ruler.InnerRulers;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.util.Log;
 
 import yanzhikai.ruler.BooheeRuler;
 
@@ -26,20 +25,22 @@ public class RightHeadRuler extends VerticalRuler {
     private void drawScale(Canvas canvas) {
         int width = canvas.getWidth();
         int height = canvas.getHeight();
-        for (float i = mParent.getMinScale(); i <= mParent.getMaxScale(); i++){
+        float start = (getScrollY() - mDrawOffset) / mParent.getInterval() + mParent.getMinScale();
+        float end = (getScrollY() + height + mDrawOffset) / mParent.getInterval() + mParent.getMinScale();
+        for (float i = start; i <= end; i++){
             float locationY = (i - mParent.getMinScale()) * mParent.getInterval();
 
-            if (locationY > getScrollY() - mDrawOffset && locationY < (getScrollY() + height + mDrawOffset)) {
+            if (i >= mParent.getMinScale() && i <= mParent.getMaxScale()) {
                 if (i % mCount == 0) {
                     canvas.drawLine(width - mParent.getBigScaleLength(), locationY, width, locationY, mBigScalePaint);
                     canvas.drawText(String.valueOf(i / 10),width - mParent.getTextMarginHead(), locationY + mParent.getTextSize() / 2, mTextPaint);
                 } else {
                     canvas.drawLine(width - mParent.getSmallScaleLength(), locationY, width, locationY, mSmallScalePaint);
                 }
-                //画轮廓线
-                canvas.drawLine(canvas.getWidth(), getScrollY(), canvas.getWidth(), getScrollY() + height, mOutLinePaint);
             }
         }
+        //画轮廓线
+        canvas.drawLine(canvas.getWidth(), getScrollY(), canvas.getWidth(), getScrollY() + height, mOutLinePaint);
     }
 
     //画边缘效果
