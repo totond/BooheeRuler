@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import yanzhikai.ruler.Utils.RulerStringUtil;
+
 /**
  * Created by yany on 2017/10/17.
  * 用于包着显示具体数字刻度Layout
@@ -23,6 +25,8 @@ public class KgNumberLayout extends RelativeLayout implements RulerCallback {
     private @ColorInt int mKgTextColor = getResources().getColor(R.color.colorForgiven);
     //kg单位文字
     private String mUnitText = "kg";
+
+    private BooheeRuler mRuler;
 
 
     public KgNumberLayout(Context context) {
@@ -69,12 +73,15 @@ public class KgNumberLayout extends RelativeLayout implements RulerCallback {
     }
 
     public void bindRuler(BooheeRuler booheeRuler){
+        mRuler = booheeRuler;
         booheeRuler.setCallback(this);
 //        tv_scale.setText(String.valueOf(booheeRuler.getCurrentScale()));
     }
 
     @Override
     public void onScaleChanging(float scale) {
-        tv_scale.setText(String.valueOf(scale/10));
+        if (mRuler != null) {
+            tv_scale.setText(RulerStringUtil.resultValueOf(scale, mRuler.getFactor()));
+        }
     }
 }

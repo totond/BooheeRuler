@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.util.Log;
 
 import yanzhikai.ruler.BooheeRuler;
+import yanzhikai.ruler.Utils.RulerStringUtil;
 
 /**
  * 头向上的尺子
@@ -25,15 +26,17 @@ public class TopHeadRuler extends HorizontalRuler {
 
     //画刻度和字
     private void drawScale(Canvas canvas) {
+        //计算开始和结束刻画时候的刻度
         float start = (getScrollX() - mDrawOffset) / mParent.getInterval() + mParent.getMinScale();
         float end = (getScrollX() + canvas.getWidth() + mDrawOffset) / mParent.getInterval() + mParent.getMinScale();
         for (float i = start; i <= end; i++) {
+            //将要刻画的刻度转化为位置信息
             float locationX = (i - mParent.getMinScale()) * mParent.getInterval();
 
             if (i >= mParent.getMinScale() && i <= mParent.getMaxScale()) {
                 if (i % mCount == 0) {
                     canvas.drawLine(locationX, 0, locationX, mParent.getBigScaleLength(), mBigScalePaint);
-                    canvas.drawText(String.valueOf(i / 10), locationX, mParent.getTextMarginHead(), mTextPaint);
+                    canvas.drawText(RulerStringUtil.resultValueOf(i,mParent.getFactor()), locationX, mParent.getTextMarginHead(), mTextPaint);
                 } else {
                     canvas.drawLine(locationX, 0, locationX, mParent.getSmallScaleLength(), mSmallScalePaint);
                 }
@@ -42,25 +45,6 @@ public class TopHeadRuler extends HorizontalRuler {
         //画轮廓线
         canvas.drawLine(getScrollX(), 0, getScrollX() + canvas.getWidth(), 0, mOutLinePaint);
 
-    }
-
-    //画刻度和字
-    private void drawScale1(Canvas canvas) {
-        float start = (getScrollX() - mDrawOffset);
-        float end = (getScrollX() + canvas.getWidth() + mDrawOffset);
-        float offset = mParent.getInterval();
-//        float start = (getScrollX() - mDrawOffset) / mParent.getInterval() + mParent.getMinScale();
-//        float end = (getScrollX() + canvas.getWidth() + mDrawOffset) / mParent.getInterval() + mParent.getMinScale();
-        for (float i = start; i <= end; i += offset) {
-                if (i % mCount == 0) {
-                    canvas.drawLine(i, 0, i, mParent.getBigScaleLength(), mBigScalePaint);
-                    canvas.drawText(String.valueOf(i / 10), i, mParent.getTextMarginHead(), mTextPaint);
-                } else {
-                    canvas.drawLine(i, 0, i, mParent.getSmallScaleLength(), mSmallScalePaint);
-                }
-        }
-        //画轮廓线
-        canvas.drawLine(getScrollX(), 0, getScrollX() + canvas.getWidth(), 0, mOutLinePaint);
     }
 
 

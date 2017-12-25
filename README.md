@@ -15,7 +15,7 @@
 ### Gradle
 
 ```
-    compile 'com.yanzhikai:BooheeRuler:0.1.3'
+    compile 'com.yanzhikai:BooheeRuler:0.1.4'
 ```
 
 ### 使用方法
@@ -83,8 +83,8 @@ public class MainActivity extends AppCompatActivity {
 
 |**属性名称**|**意义**|**类型**|**默认值**|
 |--|--|:--:|:--:|
-|minScale      | 尺子的最小刻度值     | integer| 464（在尺子上显示就是46.4）|
-|maxScale      | 尺子的最大刻度值     | integer| 2000（在尺子上显示就是200.0）|
+|minScale      | 尺子的最小刻度值     | integer| 464,在尺子上显示就是 464 * factor~~46.4~~|
+|maxScale      | 尺子的最大刻度值     | integer| 2000,在尺子上显示就是200  * factor ~~200.0~~|
 |smallScaleLength | 尺子小刻度（0.1）的刻度线长度     | dimension| 30px|
 |smallScaleWidth | 尺子小刻度（0.1）的刻度线宽度/粗细     | dimension| 3px|
 |bigScaleLength | 尺子大刻度（1.0）的刻度线长度     | dimension| 60px|
@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
 |canEdgeEffect (new)| 是否启用边缘效果|boolean|true|
 |edgeColor (new)| 边缘效果的颜色（API大于等于21设置才有效）|color|#4bbb74|
 |rulerBackGround| 尺子的背景|reference或者color|#f6f9f6|
+|factor（new）|乘积因子，尺子刻度值实际显示为：scale * factor|float|0.1|
 |rulerStyle|尺子的形态（下面有具体介绍）|enum|TOP_HEAD|
 
 　　接下来是选择尺子形态的属性rulerStyle：
@@ -115,6 +116,20 @@ public class MainActivity extends AppCompatActivity {
 |RIGHT_HEAD|头部向右的尺子|
 
 > 如效果图中，对应位置的尺子的rulerStyle为：上——BOTTOM_HEAD，下——TOP_HEAD，左——RIGHT_HEAD，右——LEFT_HEAD。
+
+#### factor说明
+　　相当于设置每个刻度的最小单位。如factor等于5时：
+![](https://i.imgur.com/VnzNHg3.gif)
+　　注意，回调中的scale值还是原来的currentScale，所以在KgNumberLayout里面做的处理改成：
+
+```
+    @Override
+    public void onScaleChanging(float scale) {
+        if (mRuler != null) {
+            tv_scale.setText(RulerStringUtil.resultValueOf(scale, mRuler.getFactor()));
+        }
+    }
+```
 
 #### 边缘效果说明
 　　0.1.2版本新增的效果，在API大于等于21（Android5.0）的时候是这样的效果：
@@ -175,6 +190,8 @@ public interface RulerCallback {
      - 性能优化：BooheeRuler的onLayout之前没有利用change属性，导致每次刷新都会重新Layout，现在不会。
      - 性能优化：修改了画刻度的逻辑，现在在刻度范围很大的情况下还可以顺畅滑动。
      - 修复了goToScale()重复回调导致显示刻度不准确的问题。
+ - 2017/12/13 **version 0.1.4**:
+     - 功能增加：增加属性factor，乘积因子，可以调节刻度值具体最小单位，默认值是0.1。如currentScale是464时，显示出的值为464 * 0.1 = 46.4。
  
 > 非常感谢[littlezan](https://github.com/littlezan)提出的性能优化建议。
 

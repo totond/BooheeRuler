@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 
 import yanzhikai.ruler.BooheeRuler;
+import yanzhikai.ruler.Utils.RulerStringUtil;
 
 /**
  * 头向下的尺子
@@ -33,7 +34,7 @@ public class BottomHeadRuler extends HorizontalRuler {
             if (i >= mParent.getMinScale() && i <= mParent.getMaxScale()) {
                 if (i % mCount == 0) {
                     canvas.drawLine(locationX, height - mParent.getBigScaleLength(), locationX, height, mBigScalePaint);
-                    canvas.drawText(String.valueOf(i / 10), locationX, height - mParent.getTextMarginHead(), mTextPaint);
+                    canvas.drawText(RulerStringUtil.resultValueOf(i,mParent.getFactor()), locationX, height - mParent.getTextMarginHead(), mTextPaint);
                 } else {
                     canvas.drawLine(locationX, height - mParent.getSmallScaleLength(), locationX, height, mSmallScalePaint);
                 }

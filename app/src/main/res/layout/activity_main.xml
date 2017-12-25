@@ -87,7 +87,9 @@
         app:scaleInterval="11.5dp"
         app:smallScaleLength="20dp"
         app:smallScaleWidth="1.5dp"
-        app:textMarginHead="70dp" />
+        app:textMarginHead="70dp"
+        app:factor="10"
+        />
 
     <!--尺子-->
     <yanzhikai.ruler.BooheeRuler
@@ -112,7 +114,8 @@
         app:scaleInterval="11.5dp"
         app:smallScaleLength="20dp"
         app:smallScaleWidth="1.5dp"
-        app:textMarginHead="70dp" />
+        app:textMarginHead="70dp"
+        />
 
     <!--尺子-->
     <yanzhikai.ruler.BooheeRuler
@@ -123,11 +126,11 @@
         app:bigScaleLength="40dp"
         app:bigScaleWidth="2.5dp"
         app:count="10"
-        app:currentScale="666666"
+        app:currentScale="6666"
         app:cursorDrawable="@drawable/cursor_shape"
         app:cursorHeight="45dp"
         app:cursorWidth="4dp"
-        app:maxScale="2000000"
+        app:maxScale="20000"
         app:minScale="464"
         app:numberTextSize="22sp"
         app:paddingStartAndEnd="10dp"

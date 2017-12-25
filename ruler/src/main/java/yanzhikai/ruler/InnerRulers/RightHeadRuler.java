@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 
 import yanzhikai.ruler.BooheeRuler;
+import yanzhikai.ruler.Utils.RulerStringUtil;
 
 /**
  * 头向→的尺子
@@ -33,7 +34,7 @@ public class RightHeadRuler extends VerticalRuler {
             if (i >= mParent.getMinScale() && i <= mParent.getMaxScale()) {
                 if (i % mCount == 0) {
                     canvas.drawLine(width - mParent.getBigScaleLength(), locationY, width, locationY, mBigScalePaint);
-                    canvas.drawText(String.valueOf(i / 10),width - mParent.getTextMarginHead(), locationY + mParent.getTextSize() / 2, mTextPaint);
+                    canvas.drawText(RulerStringUtil.resultValueOf(i,mParent.getFactor()),width - mParent.getTextMarginHead(), locationY + mParent.getTextSize() / 2, mTextPaint);
                 } else {
                     canvas.drawLine(width - mParent.getSmallScaleLength(), locationY, width, locationY, mSmallScalePaint);
                 }

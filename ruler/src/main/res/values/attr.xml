@@ -27,6 +27,7 @@
         <attr name="rulerBackGround" format="reference|color" />
         <attr name="canEdgeEffect" format="boolean"/>
         <attr name="edgeColor" format="color"/>
+        <attr name="factor" format="float"/>
     </declare-styleable>
 
     <declare-styleable name="KgNumberLayout">

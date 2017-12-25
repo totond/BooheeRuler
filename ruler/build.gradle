@@ -37,7 +37,7 @@ publish {
     repoName = 'CustomViewRepository'
     groupId = 'com.yanzhikai'
     artifactId = 'BooheeRuler'
-    publishVersion = '0.1.3'
+    publishVersion = '0.1.4'
     desc = '仿写薄荷健康体重选择尺'
     website = 'https://github.com/totond/BooheeRuler'
 }
