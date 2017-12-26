@@ -119,7 +119,9 @@ public class MainActivity extends AppCompatActivity {
 
 #### factor说明
 　　相当于设置每个刻度的最小单位。如factor等于5时：
+
 ![](https://i.imgur.com/VnzNHg3.gif)
+
 　　注意，回调中的scale值还是原来的currentScale，所以在KgNumberLayout里面做的处理改成：
 
 ```
@@ -133,8 +135,10 @@ public class MainActivity extends AppCompatActivity {
 
 #### 边缘效果说明
 　　0.1.2版本新增的效果，在API大于等于21（Android5.0）的时候是这样的效果：
+
 ![](https://i.imgur.com/wc52vZ9.gif)
 　　在API小于21（Android5.0）的时候是这样的效果：
+
 ![](https://i.imgur.com/eYB1ptb.gif)
 
 #### KgNumberLayout属性
@@ -190,10 +194,10 @@ public interface RulerCallback {
      - 性能优化：BooheeRuler的onLayout之前没有利用change属性，导致每次刷新都会重新Layout，现在不会。
      - 性能优化：修改了画刻度的逻辑，现在在刻度范围很大的情况下还可以顺畅滑动。
      - 修复了goToScale()重复回调导致显示刻度不准确的问题。
- - 2017/12/13 **version 0.1.4**:
-     - 功能增加：增加属性factor，乘积因子，可以调节刻度值具体最小单位，默认值是0.1。如currentScale是464时，显示出的值为464 * 0.1 = 46.4。
- 
+
 > 非常感谢[littlezan](https://github.com/littlezan)提出的性能优化建议。
+ - 2017/12/25 **version 0.1.4**:
+     - 功能增加：增加属性factor，乘积因子，可以调节刻度值具体最小单位，默认值是0.1。如currentScale是464时，显示出的值为464 * 0.1 = 46.4。
 
 ## 开源协议
 　　BooheeRuler遵循MIT协议。
