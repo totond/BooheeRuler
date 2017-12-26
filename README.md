@@ -137,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
 　　0.1.2版本新增的效果，在API大于等于21（Android5.0）的时候是这样的效果：
 
 ![](https://i.imgur.com/wc52vZ9.gif)
+
 　　在API小于21（Android5.0）的时候是这样的效果：
 
 ![](https://i.imgur.com/eYB1ptb.gif)
