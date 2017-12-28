@@ -186,15 +186,19 @@ public abstract class HorizontalRuler extends InnerRuler {
 //        scrollTo(scaleToScrollX(mCurrentScale),0);
     }
 
+    @Override
+    public void refreshSize() {
+        mLength = (mParent.getMaxScale() - mParent.getMinScale()) * mParent.getInterval();
+        mHalfWidth = getWidth() / 2;
+        mMinPosition = -mHalfWidth;
+        mMaxPosition = mLength - mHalfWidth;
+    }
 
     //获取控件宽高，设置相应信息
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mLength = (mParent.getMaxScale() - mParent.getMinScale()) * mParent.getInterval();
-        mHalfWidth = w / 2;
-        mMinPosition = -mHalfWidth;
-        mMaxPosition = mLength - mHalfWidth;
+        refreshSize();
     }
 
 

@@ -265,6 +265,12 @@ public class BooheeRuler extends ViewGroup {
         initDrawable();
     }
 
+    public void refreshRuler(){
+        initDrawable();
+        mInnerRuler.init(mContext);
+        mInnerRuler.refreshSize();
+    }
+
 
     public int getEdgeColor() {
         return mEdgeColor;
@@ -273,7 +279,6 @@ public class BooheeRuler extends ViewGroup {
     //设置能否使用边缘效果
     public void setCanEdgeEffect(boolean canEdgeEffect) {
         this.mCanEdgeEffect = canEdgeEffect;
-        mInnerRuler.initEdgeEffects();
     }
 
     public float getFactor() {

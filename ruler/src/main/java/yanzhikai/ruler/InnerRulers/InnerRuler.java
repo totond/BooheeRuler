@@ -53,7 +53,7 @@ public abstract class InnerRuler extends View {
         init(context);
     }
 
-    private void init(Context context){
+    public void init(Context context){
         mContext = context;
 
         mMaxLength = mParent.getMaxScale() - mParent.getMinScale();
@@ -149,6 +149,7 @@ public abstract class InnerRuler extends View {
 
     protected abstract void scrollBackToCurrentScale();
     protected abstract void goToScale(float scale);
+    public abstract void refreshSize();
 
     //设置尺子当前刻度
     public void setCurrentScale(float currentScale) {

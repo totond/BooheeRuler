@@ -173,15 +173,19 @@ public abstract class VerticalRuler extends InnerRuler {
 //        scrollTo(scaleToScrollY(mCurrentScale),0);
     }
 
+    @Override
+    public void refreshSize() {
+        mLength = (mParent.getMaxScale() - mParent.getMinScale()) * mParent.getInterval();
+        mHalfHeight = getHeight() / 2;
+        mMinPosition = -mHalfHeight;
+        mMaxPosition = mLength - mHalfHeight;
+    }
 
     //获取控件宽高，设置相应信息
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mLength = (mParent.getMaxScale() - mParent.getMinScale()) * mParent.getInterval();
-        mHalfHeight = h / 2;
-        mMinPosition = -mHalfHeight;
-        mMaxPosition = mLength - mHalfHeight;
+        refreshSize();
     }
 
 
