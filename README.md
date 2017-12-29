@@ -162,12 +162,14 @@ public class MainActivity extends AppCompatActivity {
 ```
 public interface RulerCallback {
     //选取刻度变化的时候回调
+    //注意，scale值不一定是实际值，大概值是实际值/factor
     void onScaleChanging(float scale);
 }
 
 ```
 　　实现了这个接口之后，再调用`BooheeRuler.setCallback(RulerCallback rulerCallback)`方法传入即可。
 
+ > PS:由于0.1.4更新了factor属性，所以推荐使用`RulerStringUtil.resultValueOf(scale, mRuler.getFactor())`方法来将scale属性转化为String，具体可以参考KgNumberLayout的源码。
 
 ## 更新
 
@@ -201,7 +203,7 @@ public interface RulerCallback {
 > 非常感谢[littlezan](https://github.com/littlezan)提出的性能优化建议。
 
  - 2017/12/25 **version 0.1.4**:
-     - 功能增加：增加属性factor，乘积因子，可以调节刻度值具体最小单位，默认值是0.1。如currentScale是464时，显示出的值为464 * 0.1 = 46.4。
+     - 功能增加：增加属性factor，乘积因子，可以调节刻度值具体最小单位，默认值是0.1。如currentScale是464时，显示出的值为464 * 0.1 = 46.4。增加了`RulerStringUtil`类来处理回调方法的scale值。
  - 2017/12/28 **version 0.1.5**:
      - 修复使用setXX()方法改变一些尺子属性的时候，会导致各种错乱的情况。措施：请使用完setXX()方法改变属性之后，调用`refreshRuler()`方法让尺子重新初始化。
 
