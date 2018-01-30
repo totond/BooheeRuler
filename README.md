@@ -205,7 +205,7 @@ public interface RulerCallback {
  - 2017/12/25 **version 0.1.4**:
      - 功能增加：增加属性factor，乘积因子，可以调节刻度值具体最小单位，默认值是0.1。如currentScale是464时，显示出的值为464 * 0.1 = 46.4。增加了`RulerStringUtil`类来处理回调方法的scale值。
  - 2017/12/28 **version 0.1.5**:
-     - 修复使用setXX()方法改变一些尺子属性的时候，会导致各种错乱的情况。措施：请使用完setXX()方法改变属性之后，调用`refreshRuler()`方法让尺子重新初始化。
+     - 修复使用setXX()方法改变一些尺子属性的时候，会导致各种错乱的情况。措施：请使用完setXX()方法改变属性之后，调用`refreshRuler()`方法让尺子重新初始化。(除了`setCurrentScale()`，这个不用刷新，会直接执行跳转，之前忘记说了，以为就算刷新了也没什么问题，不好意思。。。)
 
 > 非常感谢[madongqiang2201](https://github.com/madongqiang2201)发现Bug并提出修复建议。
 
