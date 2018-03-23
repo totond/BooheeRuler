@@ -1,5 +1,6 @@
 # BooheeRuler
 　　这是仿写薄荷健康里面体重选择尺的控件，因为最新的0.1.x版本经历重大更新（重构，把尺子分成多种形式），所以重新写一个README来介绍（旧的README在[这里](https://github.com/totond/BooheeRuler/blob/master/README_0.0.7.md)）：
+ > 最初是为了参加HenCoder的[活动](https://juejin.im/post/59ed6453f265da43200265fb)，最后也获奖了，谢谢HenCoder凯哥！
 
 ![](https://i.imgur.com/c7qUTRS.gif)
 
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
 > 如效果图中，对应位置的尺子的rulerStyle为：上——BOTTOM_HEAD，下——TOP_HEAD，左——RIGHT_HEAD，右——LEFT_HEAD。
 
-　　使用setXX()方法改变一些尺子属性的时候，请调用`refreshRuler()`方法让尺子重新初始化，不然数值可能会错乱，出现一堆bug。
+　　使用setXX()方法改变一些尺子属性的时候，请调用`refreshRuler()`方法让尺子重新初始化，不然数值可能会错乱，出现一堆bug。除了`setCurrentScale()`，这个不用刷新，会直接执行跳转。
 
 #### factor说明
 　　相当于设置每个刻度的最小单位。如factor等于5时：
