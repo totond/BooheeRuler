@@ -62,6 +62,7 @@
         app:smallScaleWidth="1.5dp"
         app:textMarginHead="80dp"
         app:canEdgeEffect="true"
+        app:outlineWidth="2.5dp"
         />
 
     <!--尺子-->

@@ -1,10 +1,8 @@
 package yanzhikai.ruler.InnerRulers;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
-import android.util.Log;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -91,12 +89,12 @@ public abstract class InnerRuler extends View {
         mSmallScalePaint = new Paint();
         mSmallScalePaint.setStrokeWidth(mParent.getSmallScaleWidth());
         mSmallScalePaint.setColor(mParent.getScaleColor());
-        mSmallScalePaint.setStrokeCap(Paint.Cap.ROUND);;
+        mSmallScalePaint.setStrokeCap(Paint.Cap.ROUND);
 
         mBigScalePaint = new Paint();
         mBigScalePaint.setColor(mParent.getScaleColor());
         mBigScalePaint.setStrokeWidth(mParent.getBigScaleWidth());
-        mBigScalePaint.setStrokeCap(Paint.Cap.ROUND);;
+        mBigScalePaint.setStrokeCap(Paint.Cap.ROUND);
 
         mTextPaint = new Paint();
         mTextPaint.setAntiAlias(true);
@@ -105,7 +103,8 @@ public abstract class InnerRuler extends View {
         mTextPaint.setTextAlign(Paint.Align.CENTER);
 //        mTextPaint.setStrokeJoin(Paint.Join.ROUND);
         mOutLinePaint = new Paint();
-        mOutLinePaint.setStrokeWidth(0);
+        mOutLinePaint.setStrokeWidth(mParent.getOutLineWidth());
+        mOutLinePaint.setAntiAlias(true);
         mOutLinePaint.setColor(mParent.getScaleColor());
     }
 
@@ -138,12 +137,12 @@ public abstract class InnerRuler extends View {
             scrollTo(mOverScroller.getCurrX(), mOverScroller.getCurrY());
 
             //这是最后OverScroller的最后一次滑动，如果这次滑动完了mCurrentScale不是整数，则把尺子移动到最近的整数位置
-            if (!mOverScroller.computeScrollOffset() && mCurrentScale != Math.round(mCurrentScale)){
-//                Log.d("ruler", "computeScroll: " + mCurrentScale);
+            if (!mOverScroller.computeScrollOffset() && (Math.abs(mCurrentScale - Math.round(mCurrentScale )) > 0.001f)){
+//                Log.d("ruler", "computeScroll last: " + mCurrentScale);
                 //Fling完进行一次检测回滚
                 scrollBackToCurrentScale();
             }
-            invalidate();
+            postInvalidate();
         }
     }
 
