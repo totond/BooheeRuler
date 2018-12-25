@@ -5,6 +5,7 @@ import android.support.annotation.Px;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
+import android.view.ViewGroup;
 
 import yanzhikai.ruler.BooheeRuler;
 
@@ -33,7 +34,7 @@ public abstract class VerticalRuler extends InnerRuler {
             mVelocityTracker = VelocityTracker.obtain();
         }
         mVelocityTracker.addMovement(event);
-
+        ViewGroup parent = (ViewGroup) getParent();//为了解决刻度尺在scrollview这种布局里面滑动冲突问题
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (!mOverScroller.isFinished()) {
@@ -41,6 +42,7 @@ public abstract class VerticalRuler extends InnerRuler {
                 }
 
                 mLastY = currentY;
+                parent.requestDisallowInterceptTouchEvent(true);//按下时开始让父控件不要处理任何touch事件
                 break;
             case MotionEvent.ACTION_MOVE:
                 float moveY = mLastY - currentY;
@@ -62,6 +64,7 @@ public abstract class VerticalRuler extends InnerRuler {
                     mVelocityTracker = null;
                 }
                 releaseEdgeEffects();
+                parent.requestDisallowInterceptTouchEvent(false);//按下时开始让父控件不要处理任何touch事件
                 break;
             case MotionEvent.ACTION_CANCEL:
                 if (!mOverScroller.isFinished()) {
@@ -74,6 +77,7 @@ public abstract class VerticalRuler extends InnerRuler {
                     mVelocityTracker = null;
                 }
                 releaseEdgeEffects();
+                parent.requestDisallowInterceptTouchEvent(false);//按下时开始让父控件不要处理任何touch事件
                 break;
         }
         return true;
