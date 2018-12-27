@@ -28,6 +28,7 @@
         <attr name="canEdgeEffect" format="boolean"/>
         <attr name="edgeColor" format="color"/>
         <attr name="factor" format="float"/>
+        <attr name="outlineWidth" format="dimension"/>
     </declare-styleable>
 
     <declare-styleable name="KgNumberLayout">

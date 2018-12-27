@@ -76,6 +76,8 @@ public class BooheeRuler extends ViewGroup {
     private @ColorInt int mEdgeColor  = getResources().getColor(R.color.colorForgiven);
     //刻度乘积因子
     private float mFactor = 0.1f;
+    //轮廓宽度
+    private int mOutLineWidth = 0;
 
 
     public BooheeRuler(Context context) {
@@ -129,6 +131,7 @@ public class BooheeRuler extends ViewGroup {
         mCanEdgeEffect = typedArray.getBoolean(R.styleable.BooheeRuler_canEdgeEffect,mCanEdgeEffect);
         mEdgeColor = typedArray.getColor(R.styleable.BooheeRuler_edgeColor,mEdgeColor);
         mFactor = typedArray.getFloat(R.styleable.BooheeRuler_factor,mFactor);
+        mOutLineWidth = typedArray.getDimensionPixelOffset(R.styleable.BooheeRuler_outlineWidth, mOutLineWidth);
         typedArray.recycle();
     }
 
@@ -288,6 +291,15 @@ public class BooheeRuler extends ViewGroup {
     public void setFactor(float factor) {
         this.mFactor = factor;
         mInnerRuler.postInvalidate();
+    }
+
+    public void setOutLineWidth(int outLineWidth) {
+        this.mOutLineWidth = outLineWidth;
+        mInnerRuler.postInvalidate();
+    }
+
+    public float getOutLineWidth() {
+        return mOutLineWidth;
     }
 
     public boolean canEdgeEffect(){
