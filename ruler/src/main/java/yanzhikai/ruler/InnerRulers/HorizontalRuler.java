@@ -176,14 +176,18 @@ public abstract class HorizontalRuler extends InnerRuler {
 //        Log.d(TAG, "scaleToScrollX: ");
         return (int) ((scale - mParent.getMinScale()) / mMaxLength * mLength + mMinPosition);
     }
-
+    //把Scale转化为ScrollX,放大100倍，以免精度丢失问题
+    private float scaleToScrollFloatX(float scale) {
+        return (((scale * 100 - mParent.getMinScale()*100) / mMaxLength * mLength) + 100*mMinPosition);
+    }
 
     //把移动后光标对准距离最近的刻度，就是回弹到最近刻度
     @Override
     protected void scrollBackToCurrentScale() {
         //渐变回弹
 //        Log.d(TAG, "scrollBackToCurrentScale: ");
-        mOverScroller.startScroll(getScrollX(), 0, scaleToScrollX(Math.round(mCurrentScale)) - getScrollX(), 0, 500);
+        mOverScroller.startScroll(getScrollX(), 0, Math.round((scaleToScrollFloatX(Math.round(mCurrentScale))-100*getScrollX())/100), 0, 500);
+        //mOverScroller.startScroll(getScrollX(), 0, scaleToScrollX(Math.round(mCurrentScale)) - getScrollX(), 0, 500);
         invalidate();
 
         //立刻回弹
