@@ -162,23 +162,32 @@ public abstract class VerticalRuler extends InnerRuler {
 
     //把Scale转化为ScrollY
     private int scaleToScrollY(float scale) {
-        return (int) ((scale - mParent.getMinScale()) / mMaxLength * mLength + mMinPosition);
+        return Math.round((scale - mParent.getMinScale()) / mMaxLength * mLength + mMinPosition);
     }
-    //把Scale转化为ScrollY,放大100倍，以免精度丢失问题
+
+    //把Scale转化为ScrollY,放大SCALE_TO_PX_FACTOR倍，以免精度丢失问题
     private float scaleToScrollFloatY(float scale) {
-        return  ((scale*100 - mParent.getMinScale() * 100) / mMaxLength * mLength + 100 * mMinPosition);
+        return ((scale - mParent.getMinScale()) / mMaxLength * mLength * SCALE_TO_PX_FACTOR + mMinPosition * SCALE_TO_PX_FACTOR);
     }
+
     //把移动后光标对准距离最近的刻度，就是回弹到最近刻度
     @Override
     protected void scrollBackToCurrentScale() {
-        //渐变回弹
-//        mCurrentScale = Math.round(mCurrentScale);
-        mOverScroller.startScroll(0, getScrollY(), 0, Math.round((scaleToScrollFloatY(Math.round(mCurrentScale)) - 100 *getScrollY())/100), 500);
-        //mOverScroller.startScroll(0, getScrollY(), 0, scaleToScrollY(Math.round(mCurrentScale)) - getScrollY(), 1000);
-        invalidate();
+        scrollBackToCurrentScale(Math.round(mCurrentScale));
+    }
 
-        //立刻回弹
-//        scrollTo(scaleToScrollY(mCurrentScale),0);
+    @Override
+    protected void scrollBackToCurrentScale(int currentIntScale) {
+        int dy = Math.round((scaleToScrollFloatY(currentIntScale) - SCALE_TO_PX_FACTOR * getScrollY()) / SCALE_TO_PX_FACTOR);
+        if (dy > minScrollerPx) {
+            //渐变回弹
+            mOverScroller.startScroll(getScrollX(), getScrollY(), 0, dy, 500);
+            invalidate();
+        } else {
+            //立刻回弹
+            scrollBy(0, dy);
+        }
+
     }
 
     @Override
