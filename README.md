@@ -7,8 +7,7 @@
 ## 介绍
 　　由于不少伙伴们发邮件或者issue让我做纵向的尺子，其实我也很想做，但是最近项目有点忙，最后就只能在不太忙的阶段偷偷把它做出来了，欢迎大家使用，多多指教小弟哈。
 　　这次更新主要是**把InnerRuler里面的一些公共的逻辑提取出来**，做成抽象类，然后再由两个HorizontalRuler和VerticalRuler继承它，再实现一些公共逻辑的处理，最后实现四个类型的子类：LeftHeadRuler、TopHeadRuler、RightHeadRuler、BottomHeadRuler。**这样能大大减少重复的代码，缺点就是逻辑分开了，想通过代码看实现一个尺子的逻辑就要跳来跳去有点不方便。具体的重构思路
-
-[在这]: https://blog.csdn.net/totond/article/details/78737990
+![](https://blog.csdn.net/totond/article/details/78737990)
 
 
 
